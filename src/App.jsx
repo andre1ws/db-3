@@ -1,15 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
-  Archive, ArrowDownUp, ArrowUpRight, AudioLines, BadgePercent, BarChart3, Bell, CalendarDays,
-  Check, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, Clock, Columns3, Download,
-  ExternalLink, FileAudio, FilePlus2, FileText, Handshake, Image, ImagePlus, Landmark,
-  LayoutDashboard, Menu, MessageCircle, MessagesSquare, Monitor, Pencil, PlaySquare, Plus,
-  Receipt, RefreshCw, ScanFace, Search, Settings, SlidersHorizontal, Smartphone, Sparkles,
-  TrendingUp, UserRound, Users, Video, X, Zap,
+  Archive, ArrowDown, ArrowDownUp, ArrowUp, BadgePercent, BarChart3, Bell, CalendarDays,
+  Check, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, CircleDollarSign, Clock, Columns3, Download,
+  ExternalLink, FilePlus2, FileText, Handshake, ImagePlus, Landmark,
+  Menu, MessageCircle, MessagesSquare, Monitor, Pencil, PlaySquare, Plus,
+  Receipt, RefreshCw, ScanFace, Search, Settings, SlidersHorizontal, Smartphone,
+  Trash2, TrendingUp, UserRound, Users, Video, X, Zap,
 } from 'lucide-react'
 import './App.css'
-
-const dashboardItem = { label: 'Dashboard', icon: LayoutDashboard }
 
 const adminSubItems = ['Users', 'Notifications', 'Labels', 'Promotions', 'Roles']
 
@@ -28,19 +26,97 @@ const navItems = [
   { label: 'Knowledge base', icon: MessagesSquare, arrow: true },
 ]
 
-const voices = [
-  { name: 'Emma Parker - Professional', kind: 'Narration', language: '🇺🇸 English (US)', color: 'blue' },
-  { name: 'Sofia Martinez - Friendly', kind: 'Storytelling', language: '🇪🇸 Spanish', color: 'orange' },
-  { name: 'Arif Rahman - Engaging', kind: 'Storytelling', language: '🇧🇩 Bengali', color: 'lime' },
-  { name: 'Daniel Brooks - Confident', kind: 'Storytelling', language: '🇬🇧 English (UK)', color: 'mint' },
-  { name: 'Hiro Tanaka - Corporate', kind: 'Narration', language: '🇯🇵 Japanese', color: 'yellow' },
-  { name: 'Olivia Reed - Storytelling', kind: 'Narrative', language: '🇺🇸 English (US)', color: 'pink' },
-]
-
-const useCases = [
-  { type: 'youtube', title: 'Engaging voiceovers for videos & shorts.' },
-  { type: 'trends', title: 'AI Voice Trends 2026' },
-  { type: 'tiktok', title: 'Engaging TikTok voiceovers.' },
+const notifications = [
+  {
+    id: 1, sender: 'Vladislava Kotova', email: 'v.kotova@mediacube.io', avatar: 'default',
+    segment: 'Users', push: true, sent: '2026-07-02',
+    title: 'Important Update: Withdrawal Fee Changes Effective July 6, 2026',
+    preview: 'Dear User, We are writing to inform you of an upcoming change to the fee for fund withdrawals from your balance.',
+  },
+  {
+    id: 2, sender: 'Andrei Vasileuski', email: 'andre@mediacube.io', avatar: 'default',
+    segment: 'Users', push: true, sent: '2026-07-01',
+    title: 'Perks and Benefits in Garna',
+    preview: 'We know how much of your budget goes toward work tools, so we’ve negotiated exclusive deals for you.',
+  },
+  {
+    id: 3, sender: 'Maria Lapchik G', email: 'lapm@mediacube.io', avatar: 'photo-d',
+    segment: 'Users', push: false, sent: '2026-06-26',
+    title: 'Hi! We are delighted to welcome you to the Garna platform!',
+    preview: 'Your profile has been successfully registered. Your account is now officially linked to Legal Entity.',
+  },
+  {
+    id: 4, sender: 'Maria Lapchik G', email: 'lapm@mediacube.io', avatar: 'photo-d',
+    segment: 'Users', push: false, sent: '2026-06-26',
+    title: 'Hi! We are delighted to welcome you to the Garna platform!',
+    preview: 'Your profile has been successfully registered. Your account is now officially linked to Legal Entity.',
+  },
+  {
+    id: 5, sender: 'Maria Lapchik G', email: 'lapm@mediacube.io', avatar: 'photo-d',
+    segment: 'Users', push: false, sent: '2026-06-26',
+    title: 'Добрый день! Рады приветствовать вас на платформе Garna!',
+    preview: 'Ваш профиль успешно зарегистрирован. Мы рады сообщить, что ваш аккаунт официально привязан к юрлицу.',
+  },
+  {
+    id: 6, sender: 'Maria Lapchik G', email: 'lapm@mediacube.io', avatar: 'photo-d',
+    segment: 'Users', push: false, sent: '2026-06-26',
+    title: 'Добрый день! Рады приветствовать вас на платформе Garna!',
+    preview: 'Ваш профиль успешно зарегистрирован. Мы рады сообщить, что ваш аккаунт официально привязан к юрлицу.',
+  },
+  {
+    id: 7, sender: 'Alesia Marchuk', email: 'almar@mediacube.io', avatar: 'photo-c',
+    segment: 'Users', push: true, sent: '2026-06-23',
+    title: 'Scheduled Maintenance',
+    preview: 'On June 24, from 08:00 to 13:00 UTC, crypto withdrawals will be unavailable. This is a planned maintenance window.',
+  },
+  {
+    id: 8, sender: 'KaterinaQ Kot', email: 'em@mediacube.io', avatar: 'photo-b',
+    segment: 'Users', push: false, sent: '2026-05-26',
+    title: 'e',
+    preview: 'тест',
+  },
+  {
+    id: 9, sender: 'Evgeniia Frolenkova', email: 'fro@mediacube.io', avatar: 'photo-a',
+    segment: 'Users', push: true, sent: '2026-05-14',
+    title: 'Your Advance is waiting — check it now',
+    preview: 'Get an Advance for up to 12 months — calculate amount in MC Pay',
+  },
+  {
+    id: 10, sender: 'Alesia Marchuk', email: 'almar@mediacube.io', avatar: 'photo-c',
+    segment: 'Users', push: true, sent: '2026-05-12',
+    title: 'Crypto wallet terms update',
+    preview: 'Starting May 15, 2026, an inactivity fee of 200 USD/month will apply to wallets with no transactions.',
+  },
+  {
+    id: 11, sender: 'Maksim Trafimau', email: 'maxtro@mediacube.io', avatar: 'default',
+    segment: 'CSP', push: false, sent: '2026-05-08',
+    title: 'YouTube payout information update',
+    preview: 'Due to temporary delays in receiving funds from YouTube and completing the required checks, payouts may arrive later.',
+  },
+  {
+    id: 12, sender: 'Alesia Marchuk', email: 'almar@mediacube.io', avatar: 'photo-c',
+    segment: 'Users', push: true, sent: '2026-05-06',
+    title: 'Изменения выплат в RUB',
+    preview: 'В связи с санкционными ограничениями с 14 мая прекращаются выплаты на счета в российских банках.',
+  },
+  {
+    id: 13, sender: 'Vladislav Filipovich G', email: 'filv@mediacube.io', avatar: 'photo-b',
+    segment: 'Users', push: false, sent: '2026-05-05',
+    title: 'Crypto withdrawal fee update',
+    preview: 'Starting May 1, 2026, the crypto withdrawal fee will increase by a fixed 5 USD on top of the network fee.',
+  },
+  {
+    id: 14, sender: 'Vladislav Filipovich G', email: 'filv@mediacube.io', avatar: 'photo-b',
+    segment: 'Users', push: false, sent: '2026-05-05',
+    title: 'We’d like to share a few important updates with you',
+    preview: 'Changes in the list of banks available for withdrawals in Russia and crypto withdrawal fee update.',
+  },
+  {
+    id: 15, sender: 'Vladislav Filipovich G', email: 'filv@mediacube.io', avatar: 'photo-b',
+    segment: 'Users', push: false, sent: '2026-05-05',
+    title: 'We’d like to share a few important updates with you',
+    preview: 'Changes in Belarusian banking operations and crypto withdrawal fee update',
+  },
 ]
 
 const promotions = [
@@ -228,6 +304,77 @@ function getProfile(user) {
 
 const cardTabs = ['Summary', 'Verification', 'Channels', 'Advance', 'Communication', 'Transactions', 'Revenue']
 
+const filterConditions = [
+  { key: 'empty', label: 'Empty' },
+  { key: 'is', label: 'Is' },
+  { key: 'is-not', label: 'Is not' },
+]
+
+const titleCase = (value) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+
+const isBlank = (value) =>
+  value == null || value === '' || value === '—' || (Array.isArray(value) && value.length === 0)
+
+const filterFields = [
+  { key: 'role', label: 'Role', read: (user) => user.role },
+  { key: 'kyc', label: 'KYC status', read: (user) => user.kyc, format: titleCase },
+  { key: 'country', label: 'Country', read: (user) => getProfile(user).country },
+  { key: 'position', label: 'Position', read: (user) => getProfile(user).position },
+  { key: 'device', label: 'Last action device', read: (user) => user.device, format: titleCase },
+  { key: 'tag', label: 'Label', read: (user) => getProfile(user).tags },
+  { key: 'registered', label: 'Registration year', read: (user) => user.registered.slice(-4) },
+].map((field) => {
+  const values = new Set()
+  users.forEach((user) => {
+    const raw = field.read(user)
+    const items = Array.isArray(raw) ? raw : [raw]
+    items.forEach((item) => { if (!isBlank(item)) values.add(item) })
+  })
+  return {
+    ...field,
+    options: [...values].sort().map((value) => ({
+      value,
+      label: field.format ? field.format(value) : value,
+    })),
+  }
+})
+
+function matchesFilter(user, filter) {
+  const field = filterFields.find((item) => item.key === filter.field)
+  if (!field) return true
+  const raw = field.read(user)
+  if (filter.condition === 'empty') return isBlank(raw)
+  const hit = Array.isArray(raw) ? raw.includes(filter.value) : raw === filter.value
+  return filter.condition === 'is' ? hit : !hit
+}
+
+function describeFilter(filter) {
+  const field = filterFields.find((item) => item.key === filter.field)
+  const option = field?.options.find((item) => item.value === filter.value)
+  return {
+    condition: filterConditions.find((item) => item.key === filter.condition)?.label ?? '',
+    field: field?.label ?? filter.field,
+    value: option?.label ?? filter.value,
+  }
+}
+
+const sameFilters = (a, b) =>
+  a.length === b.length &&
+  a.every((item, index) =>
+    item.field === b[index].field && item.condition === b[index].condition && item.value === b[index].value)
+
+const PRESETS_KEY = 'voiceon.users.filter-presets'
+
+function loadPresets() {
+  try {
+    const raw = localStorage.getItem(PRESETS_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
 function Sidebar({ open, onClose, active, setActive }) {
   const [adminOpen, setAdminOpen] = useState(true)
   const go = (label) => { setActive(label); onClose() }
@@ -236,19 +383,14 @@ function Sidebar({ open, onClose, active, setActive }) {
     <>
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         <div className="brand-row">
-          <strong className="brand">Voiceon</strong>
+          <strong className="brand">Dashboard</strong>
           <button className="icon-button close-sidebar" onClick={onClose} aria-label="Close menu"><X size={18} /></button>
         </div>
         <nav>
-          <button className={`nav-item ${active === dashboardItem.label ? 'active' : ''}`}
-            onClick={() => go(dashboardItem.label)}>
-            <dashboardItem.icon size={17} strokeWidth={2} /><span>{dashboardItem.label}</span>
-          </button>
-
           <p className="nav-title">Sections</p>
 
           <button className="nav-item nav-group-toggle" onClick={() => setAdminOpen((value) => !value)}>
-            <Users size={17} strokeWidth={2} /><span>Administrator</span>
+            <Users size={17} strokeWidth={1.5} /><span>Administrator</span>
             <ChevronDown size={14} className={`nav-arrow ${adminOpen ? 'open' : ''}`} />
           </button>
           {adminOpen && (
@@ -265,7 +407,7 @@ function Sidebar({ open, onClose, active, setActive }) {
           {navItems.map(({ label, icon: Icon, dot, arrow }) => (
             <button key={label} className={`nav-item ${active === label ? 'active' : ''}`}
               onClick={() => go(label)}>
-              <Icon size={17} strokeWidth={2} /><span>{label}</span>
+              <Icon size={17} strokeWidth={1.5} /><span>{label}</span>
               {dot && <span className="nav-dot" />}
               {arrow && <ChevronRight size={14} className="nav-arrow" />}
             </button>
@@ -278,87 +420,6 @@ function Sidebar({ open, onClose, active, setActive }) {
         </button>
       </aside>
       {open && <button className="backdrop" onClick={onClose} aria-label="Close menu" />}
-    </>
-  )
-}
-
-function ServiceCard({ icon: Icon, title, tone }) {
-  return (
-    <button className="service-card">
-      <div className={`service-art ${tone}`}>
-        <FileText size={48} strokeWidth={1.5} /><span><Icon size={19} /></span>
-      </div>
-      <strong>{title}</strong>
-    </button>
-  )
-}
-
-function HomePage() {
-  return (
-    <>
-      <div className="welcome-row">
-        <div>
-          <h1>Welcome, <em>Alex Carter</em> <span>👋</span></h1>
-          <p>Create, clone, and scale AI voices for content, products, and marketing.</p>
-        </div>
-        <button className="primary-button" onClick={() => alert('Voice creator opened')}>
-          <Plus size={18} /> Create Voice
-        </button>
-      </div>
-
-      <section className="overview-grid">
-        <div className="hero-card">
-          <div className="hero-label"><Sparkles size={15} /><AudioLines size={15} /><span>AI</span><span>Voice</span></div>
-          <h2>Turn Any Script Into<br /><em>Natural Speech</em></h2>
-          <p>Dive into trends and product insights</p>
-          <button onClick={() => alert('Let’s start creating!')}>Start Creating <ArrowUpRight size={14} /></button>
-        </div>
-        <div className="panel services-panel">
-          <div className="panel-heading">
-            <h3>Popular Services</h3>
-            <div><button><ChevronLeft /></button><button><ChevronRight /></button></div>
-          </div>
-          <div className="services">
-            <ServiceCard title="Instant speech" icon={AudioLines} tone="indigo" />
-            <ServiceCard title="Audiobook" icon={FileAudio} tone="orange" />
-            <ServiceCard title="Image & Video" icon={Image} tone="purple" />
-          </div>
-        </div>
-      </section>
-
-      <section className="panel voices-panel">
-        <div className="panel-heading left-arrow"><h3>Trending voices <ChevronRight size={17} /></h3></div>
-        <div className="voices-grid">
-          {voices.map((voice) => (
-            <button className="voice-card" key={voice.name}>
-              <span className={`voice-orb ${voice.color}`}><i /></span>
-              <span className="voice-copy">
-                <strong>{voice.name}</strong><small>{voice.kind}</small><small>{voice.language}</small>
-              </span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="panel usecases-panel">
-        <div className="panel-heading">
-          <h3>Handpicked For Your Use Case</h3>
-          <div><button><ChevronLeft /></button><button><ChevronRight /></button></div>
-        </div>
-        <div className="usecases">
-          {useCases.map((item) => (
-            <button className={`usecase-card ${item.type}`} key={item.type}>
-              <span className="usecase-art">
-                {item.type === 'youtube' && <span className="youtube-mark">▶</span>}
-                {item.type === 'trends' && <strong>V3</strong>}
-                {item.type === 'tiktok' && <span className="tiktok-mark">♪</span>}
-              </span>
-              <strong>{item.title}</strong>
-              <span className="round-arrow"><ArrowUpRight size={15} /></span>
-            </button>
-          ))}
-        </div>
-      </section>
     </>
   )
 }
@@ -431,16 +492,19 @@ function UserCard({ user, onBack }) {
       </div>
 
       {tab === 'Summary' ? (
-        <>
-          <div className="profile-grid">
-            <Field label="Gender">{profile.gender}</Field>
-            <Field label="Birth date">{profile.birthDate}</Field>
-            <Field label="Country">{profile.country}</Field>
-            <Field label="Date of ICA signing">{profile.icaDate}</Field>
-            <Field label="Position">{profile.position}</Field>
+        <div className="profile-cards">
+          <div className="profile-card">
+            <h3>Personal information</h3>
+            <div className="profile-grid">
+              <Field label="Gender">{profile.gender}</Field>
+              <Field label="Birth date">{profile.birthDate}</Field>
+              <Field label="Country">{profile.country}</Field>
+              <Field label="Date of ICA signing">{profile.icaDate}</Field>
+              <Field label="Position">{profile.position}</Field>
+            </div>
           </div>
 
-          <div className="profile-section">
+          <div className="profile-card">
             <div className="profile-section-head">
               <h3>Account details and settings</h3>
               <button className="ghost-danger">Disable 2FA</button>
@@ -456,39 +520,41 @@ function UserCard({ user, onBack }) {
             </div>
           </div>
 
-          <div className="profile-grid activity-grid">
-            <Field label="Registration date">{profile.registered}</Field>
-            <Field label="Last action">
-              <span className="action-cell">
-                {profile.lastAction}
-                {profile.device === 'mobile' ? <Smartphone size={14} /> : <Monitor size={14} />}
-              </span>
-            </Field>
-            <Field label="Last action in the app">
-              <span className="action-cell">
-                {profile.lastActionApp}
-                <Smartphone size={14} />
-              </span>
-            </Field>
+          <div className="profile-card">
+            <h3>Activity</h3>
+            <div className="profile-grid">
+              <Field label="Registration date">{profile.registered}</Field>
+              <Field label="Last action">
+                <span className="action-cell">
+                  {profile.lastAction}
+                  {profile.device === 'mobile' ? <Smartphone size={14} /> : <Monitor size={14} />}
+                </span>
+              </Field>
+              <Field label="Last action in the app">
+                <span className="action-cell">
+                  {profile.lastActionApp}
+                  <Smartphone size={14} />
+                </span>
+              </Field>
+            </div>
           </div>
 
-          <div className="profile-split">
-            <div className="profile-block">
-              <div className="profile-section-head">
-                <h3>Roles</h3>
-                <button className="icon-button" aria-label="Edit roles"><Pencil size={14} /></button>
-              </div>
-              {profile.role ? <span className="role-pill">{profile.role}</span> : <p className="muted">No roles assigned</p>}
+          <div className="profile-card">
+            <div className="profile-section-head">
+              <h3>Roles</h3>
+              <button className="icon-button" aria-label="Edit roles"><Pencil size={14} /></button>
             </div>
-            <div className="profile-block">
-              <div className="profile-section-head">
-                <h3>Fintech</h3>
-                <button className="icon-button" aria-label="Edit fintech"><Pencil size={14} /></button>
-              </div>
-              <p className="muted">No fintech settings</p>
-            </div>
+            {profile.role ? <span className="role-pill">{profile.role}</span> : <p className="muted">No roles assigned</p>}
           </div>
-        </>
+
+          <div className="profile-card">
+            <div className="profile-section-head">
+              <h3>Fintech</h3>
+              <button className="icon-button" aria-label="Edit fintech"><Pencil size={14} /></button>
+            </div>
+            <p className="muted">No fintech settings</p>
+          </div>
+        </div>
       ) : (
         <div className="profile-empty">No {tab.toLowerCase()} data yet.</div>
       )}
@@ -496,22 +562,204 @@ function UserCard({ user, onBack }) {
   )
 }
 
+function FilterSelect({ value, onChange, placeholder, options, disabled }) {
+  return (
+    <div className={`filter-select ${disabled ? 'disabled' : ''}`}>
+      <select value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)}>
+        <option value="">{placeholder}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+      <ChevronDown size={14} />
+    </div>
+  )
+}
+
+function FiltersPanel({
+  draft, field, condition, value, activePreset,
+  onFieldChange, onConditionChange, onValueChange, onRemove, onClear, onClose,
+  onApply, applyDisabled, presetName, onPresetNameChange, onSavePreset, onDeletePreset,
+}) {
+  const currentField = filterFields.find((item) => item.key === field)
+  const valueDisabled = !currentField || condition === 'empty'
+
+  return (
+    <section className="filters-panel">
+      <header className="filters-head">
+        <h3>Filters {draft.length > 0 && <small>{draft.length}</small>}</h3>
+        <button className="icon-button" onClick={onClose} aria-label="Close filters"><X size={16} /></button>
+      </header>
+
+      <div className="filters-row">
+        <label className="filters-control">
+          <span>Field</span>
+          <FilterSelect
+            value={field}
+            onChange={onFieldChange}
+            placeholder="Select a field"
+            options={filterFields.map((item) => ({ value: item.key, label: item.label }))}
+          />
+        </label>
+
+        <div className="filters-control">
+          <span>Condition</span>
+          <div className="segmented">
+            {filterConditions.map((item) => (
+              <button
+                key={item.key}
+                className={condition === item.key ? 'active' : ''}
+                onClick={() => onConditionChange(item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <label className="filters-control">
+          <span>Value</span>
+          <FilterSelect
+            value={value}
+            onChange={onValueChange}
+            placeholder={condition === 'empty' ? 'Not needed for “Empty”' : 'Select a value'}
+            options={currentField?.options ?? []}
+            disabled={valueDisabled}
+          />
+        </label>
+      </div>
+
+      {draft.length > 0 && (
+        <div className="filters-added">
+          <div className="filters-chip-list">
+            {draft.map((item) => {
+              const parts = describeFilter(item)
+              return (
+                <span className="filter-chip" key={item.id}>
+                  <b>{parts.condition}</b>
+                  <span>{parts.field}{item.condition !== 'empty' && <strong>: {parts.value}</strong>}</span>
+                  <button onClick={() => onRemove(item.id)} aria-label="Remove filter"><X size={11} /></button>
+                </span>
+              )
+            })}
+          </div>
+          <button className="text-link filters-clear" onClick={onClear}>Clear all</button>
+        </div>
+      )}
+
+      <footer className="filters-footer">
+        <button className="primary-button" onClick={onApply} disabled={applyDisabled}>Apply filters</button>
+        {activePreset && (
+          <button className="ghost-danger" onClick={onDeletePreset}>
+            <Trash2 size={13} /> Delete “{activePreset.name}”
+          </button>
+        )}
+        <div className="filters-preset">
+          <span>Save as preset</span>
+          <input
+            value={presetName}
+            onChange={(event) => onPresetNameChange(event.target.value)}
+            placeholder="Preset name"
+          />
+          <button
+            className="secondary-button"
+            onClick={onSavePreset}
+            disabled={!presetName.trim() || draft.length === 0}
+          >
+            Save
+          </button>
+        </div>
+      </footer>
+    </section>
+  )
+}
+
 function UsersPage() {
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState(null)
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [draft, setDraft] = useState([])
+  const [applied, setApplied] = useState([])
+  const [field, setField] = useState('')
+  const [condition, setCondition] = useState('is')
+  const [value, setValue] = useState('')
+  const [presets, setPresets] = useState(loadPresets)
+  const [activePresetId, setActivePresetId] = useState(null)
+  const [presetName, setPresetName] = useState('')
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PRESETS_KEY, JSON.stringify(presets))
+    } catch {
+      // storage unavailable — presets stay in memory for this session
+    }
+  }, [presets])
+
+  const addFilter = (nextField, nextCondition, nextValue) => {
+    setDraft((current) => {
+      const exists = current.some((item) =>
+        item.field === nextField && item.condition === nextCondition && item.value === nextValue)
+      if (exists) return current
+      const id = `${nextField}-${nextCondition}-${nextValue}-${current.length}-${Date.now()}`
+      return [...current, { id, field: nextField, condition: nextCondition, value: nextValue }]
+    })
+  }
+
+  const handleFieldChange = (next) => {
+    setField(next)
+    setValue('')
+    if (next && condition === 'empty') addFilter(next, 'empty', '')
+  }
+
+  const handleConditionChange = (next) => {
+    setCondition(next)
+    setValue('')
+    if (field && next === 'empty') addFilter(field, 'empty', '')
+  }
+
+  const handleValueChange = (next) => {
+    if (!next) return
+    addFilter(field, condition, next)
+  }
+
+  const togglePreset = (preset) => {
+    if (activePresetId === preset.id) {
+      setActivePresetId(null)
+      setDraft([])
+      setApplied([])
+      return
+    }
+    setActivePresetId(preset.id)
+    setDraft(preset.filters)
+    setApplied(preset.filters)
+    setPanelOpen(true)
+  }
+
+  const savePreset = () => {
+    const preset = { id: `preset-${Date.now()}`, name: presetName.trim(), filters: draft }
+    setPresets((current) => [...current, preset])
+    setActivePresetId(preset.id)
+    setPresetName('')
+  }
+
+  const deletePreset = (id) => {
+    setPresets((current) => current.filter((item) => item.id !== id))
+    if (activePresetId === id) setActivePresetId(null)
+  }
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return users
-    return users.filter((user) =>
-      [user.name, user.username, user.email, user.role].filter(Boolean).some((value) =>
-        value.toLowerCase().includes(q),
-      ),
-    )
-  }, [query])
+    return users.filter((user) => {
+      const matchesQuery = !q || [user.name, user.username, user.email, user.role]
+        .filter(Boolean)
+        .some((item) => item.toLowerCase().includes(q))
+      return matchesQuery && applied.every((filter) => matchesFilter(user, filter))
+    })
+  }, [query, applied])
 
   const selected = users.find((user) => user.id === selectedId)
   const detailOpen = Boolean(selected)
+  const activePreset = presets.find((item) => item.id === activePresetId)
 
   return (
     <div className="users-page">
@@ -524,9 +772,26 @@ function UsersPage() {
             placeholder="Username, channel or email"
           />
         </label>
-        <button className="icon-button users-filter" aria-label="Filters">
+        <button
+          className={`icon-button users-filter ${panelOpen || applied.length > 0 ? 'active' : ''}`}
+          onClick={() => setPanelOpen((current) => !current)}
+          aria-label="Filters"
+        >
           <SlidersHorizontal size={16} />
+          {applied.length > 0 && <span className="filter-count">{applied.length}</span>}
         </button>
+        {presets.map((preset) => (
+          <span key={preset.id} className={`preset-chip ${activePresetId === preset.id ? 'active' : ''}`}>
+            <button className="preset-chip-label" onClick={() => togglePreset(preset)}>{preset.name}</button>
+            <button
+              className="preset-chip-remove"
+              onClick={() => deletePreset(preset.id)}
+              aria-label={`Delete preset ${preset.name}`}
+            >
+              <X size={11} />
+            </button>
+          </span>
+        ))}
         <div className="users-toolbar-actions">
           <button className="kyc-button">
             <ScanFace size={15} />
@@ -537,6 +802,28 @@ function UsersPage() {
           <button className="icon-button toolbar-outline-button" aria-label="Columns"><Columns3 size={16} /></button>
         </div>
       </div>
+
+      {panelOpen && (
+        <FiltersPanel
+          draft={draft}
+          field={field}
+          condition={condition}
+          value={value}
+          activePreset={activePreset}
+          onFieldChange={handleFieldChange}
+          onConditionChange={handleConditionChange}
+          onValueChange={handleValueChange}
+          onRemove={(id) => setDraft((current) => current.filter((item) => item.id !== id))}
+          onClear={() => setDraft([])}
+          onClose={() => setPanelOpen(false)}
+          onApply={() => setApplied(draft)}
+          applyDisabled={sameFilters(draft, applied)}
+          presetName={presetName}
+          onPresetNameChange={setPresetName}
+          onSavePreset={savePreset}
+          onDeletePreset={() => deletePreset(activePresetId)}
+        />
+      )}
 
       <section className="panel users-panel">
         <div className="users-table-wrap">
@@ -619,11 +906,247 @@ function UsersPage() {
   )
 }
 
-function PromotionField({ label, placeholder, type = 'select', icon: Icon }) {
+function formatSentDate(value) {
+  return new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+function NotificationsPage({ draft, setDraft }) {
+  const [query, setQuery] = useState('')
+  const [descending, setDescending] = useState(true)
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const matched = q
+      ? notifications.filter((item) =>
+        [item.sender, item.email, item.title, item.preview].some((field) => field.toLowerCase().includes(q)))
+      : notifications
+    return [...matched].sort((a, b) =>
+      descending ? b.sent.localeCompare(a.sent) : a.sent.localeCompare(b.sent))
+  }, [query, descending])
+
   return (
-    <label className="promotion-field">
+    <div className="users-page">
+      <div className="users-toolbar">
+        <label className="users-search">
+          <Search size={16} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Username or email"
+          />
+        </label>
+        <button className="icon-button users-filter" aria-label="Filters">
+          <SlidersHorizontal size={16} />
+        </button>
+        <button className="archive-button notifications-archive"><Archive size={16} /> Archive</button>
+      </div>
+
+      <section className="panel users-panel">
+        <div className="users-table-wrap">
+          <table className="users-table notifications-table">
+            <thead>
+              <tr>
+                <th>
+                  <span className="th-user">
+                    Sender
+                    <small>{visible.length.toLocaleString('en-US')}</small>
+                  </span>
+                </th>
+                <th>Segment</th>
+                <th>Push</th>
+                <th>Message</th>
+                <th>
+                  <button className="th-sort th-sort-button" onClick={() => setDescending((value) => !value)}>
+                    {descending ? <ArrowDown size={12} /> : <ArrowUp size={12} />} Sent
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map((item) => (
+                <tr key={item.id} className="clickable-row" onClick={() => setDraft(item)}>
+                  <td>
+                    <div className="user-cell">
+                      <UserAvatar name={item.sender} variant={item.avatar} />
+                      <div>
+                        <strong>{item.sender}</strong>
+                        <small>{item.email}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span className="role-pill">{item.segment}</span></td>
+                  <td>
+                    {item.push
+                      ? <CircleCheck size={17} strokeWidth={1.5} className="push-sent" />
+                      : <span className="empty-cell">—</span>}
+                  </td>
+                  <td>
+                    <div className="message-cell">
+                      <strong>{item.title}</strong>
+                      <small>{item.preview}</small>
+                    </div>
+                  </td>
+                  <td className="sent-cell">{formatSentDate(item.sent)}</td>
+                </tr>
+              ))}
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="users-empty">No notifications match your search.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {draft !== undefined && (
+        <NotificationModal notification={draft} onClose={() => setDraft(undefined)} />
+      )}
+    </div>
+  )
+}
+
+const notificationLanguages = ['EN', 'RU', 'ES', 'PT', 'TH', 'AR', 'VI']
+const notificationChannels = ['Notification', 'Push']
+const notificationVariables = '{user_name}, {credits_amount}, {funds_amount}, {balance_amount}'
+const emptyContent = { title: '', text: '' }
+
+function CountedField({ label, value, onChange, placeholder, limit, rows }) {
+  return (
+    <label className="form-field">
       <span>{label}</span>
-      <div className="promotion-input">
+      <div className="counted-field">
+        <textarea
+          value={value}
+          rows={rows}
+          maxLength={limit}
+          placeholder={placeholder}
+          onChange={(event) => onChange(event.target.value)}
+        />
+        <small>{value.length}/{limit}</small>
+      </div>
+      <p className="field-hint">Variables – {notificationVariables}</p>
+    </label>
+  )
+}
+
+function NotificationModal({ notification, onClose }) {
+  const isEditing = Boolean(notification)
+  const [language, setLanguage] = useState('EN')
+  const [channel, setChannel] = useState('Notification')
+  const [content, setContent] = useState(() => (
+    notification
+      ? { 'EN-Notification': { title: notification.title, text: notification.preview } }
+      : {}
+  ))
+  const [articleFormat, setArticleFormat] = useState(false)
+  const [addButton, setAddButton] = useState(false)
+  const [important, setImportant] = useState(false)
+
+  const key = `${language}-${channel}`
+  const draft = content[key] ?? emptyContent
+  const patch = (changes) => setContent((current) => ({ ...current, [key]: { ...draft, ...changes } }))
+  const incomplete = !draft.title.trim()
+
+  return (
+    <div className="side-modal-backdrop" onMouseDown={onClose}>
+      <aside className="side-modal" onMouseDown={(event) => event.stopPropagation()}>
+        <header>
+          <h2>{isEditing ? 'Edit notification or article' : 'Create a notification or article'}</h2>
+          <button className="icon-button" onClick={onClose} aria-label="Close notification"><X size={18} /></button>
+        </header>
+
+        <div className="modal-form">
+          <section className="modal-section">
+            <h3>Add segment by users</h3>
+            <div className="form-row-with-button">
+              <div className="form-input">
+                <input placeholder="Usernames or email addresses" readOnly />
+                <ChevronDown size={14} />
+              </div>
+              <button className="outline-icon-button" type="button"><FilePlus2 size={18} /></button>
+            </div>
+          </section>
+
+          <section className="modal-section">
+            <h3>Add segment label and CSP</h3>
+            <FormField label="Label" placeholder="Select labels" />
+            <FormField label="CSP" placeholder="Select a CSP" />
+            <FormField label="Exclude CSP" placeholder="Select a CSP" />
+            <div className="form-row-with-button">
+              <FormField label="Narrow segment by country" placeholder="Users from selected countries in the segment will see the content" />
+              <button className="outline-icon-button field-side-button" type="button"><FilePlus2 size={18} /></button>
+            </div>
+          </section>
+
+          <section className="modal-section">
+            <div className="language-tabs">
+              {notificationLanguages.map((item) => (
+                <button key={item} className={item === language ? 'active' : ''} onClick={() => setLanguage(item)}>
+                  {item}
+                </button>
+              ))}
+            </div>
+            <div className="segmented channel-tabs">
+              {notificationChannels.map((item) => (
+                <button key={item} className={item === channel ? 'active' : ''} onClick={() => setChannel(item)}>
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            <CountedField
+              label={`${channel} title`}
+              value={draft.title}
+              onChange={(value) => patch({ title: value })}
+              placeholder="Recommended length is up to 70 characters"
+              limit={100}
+              rows={2}
+            />
+            <CountedField
+              label={`${channel} text`}
+              value={draft.text}
+              onChange={(value) => patch({ text: value })}
+              placeholder="Recommended length is up to 200 characters"
+              limit={500}
+              rows={3}
+            />
+
+            <div className="toggle-list">
+              <label className="toggle-row">
+                <input type="checkbox" checked={articleFormat} onChange={(event) => setArticleFormat(event.target.checked)} />
+                <span className="toggle" />
+                Article format
+              </label>
+              <label className="toggle-row">
+                <input type="checkbox" checked={addButton} onChange={(event) => setAddButton(event.target.checked)} />
+                <span className="toggle" />
+                Add a button
+              </label>
+              <label className="toggle-row">
+                <input type="checkbox" checked={important} onChange={(event) => setImportant(event.target.checked)} />
+                <span className="toggle" />
+                Mark notification as important
+              </label>
+            </div>
+          </section>
+        </div>
+
+        <footer>
+          <button className="primary-button" onClick={onClose}>{isEditing ? 'Save changes' : 'Create'}</button>
+          <button className="secondary-button" disabled={incomplete}>Preview</button>
+          <button className="secondary-button" disabled={incomplete} onClick={onClose}>Save draft</button>
+        </footer>
+      </aside>
+    </div>
+  )
+}
+
+function FormField({ label, placeholder, type = 'select', icon: Icon }) {
+  return (
+    <label className="form-field">
+      <span>{label}</span>
+      <div className="form-input">
         {Icon && <Icon size={16} />}
         <input placeholder={placeholder} readOnly />
         {type === 'select' && <ChevronDown size={14} />}
@@ -652,18 +1175,18 @@ function PromotionModal({ promotion, onClose }) {
   const [reminder, setReminder] = useState(false)
 
   return (
-    <div className="promotion-modal-backdrop" onMouseDown={onClose}>
-      <aside className="promotion-modal" onMouseDown={(event) => event.stopPropagation()}>
+    <div className="side-modal-backdrop" onMouseDown={onClose}>
+      <aside className="side-modal" onMouseDown={(event) => event.stopPropagation()}>
         <header>
           <h2>{isEditing ? 'Edit promotion' : 'Create a promotion'}</h2>
           <button className="icon-button" onClick={onClose} aria-label="Close promotion"><X size={18} /></button>
         </header>
 
-        <div className="promotion-form">
-          <section className="promotion-form-section">
+        <div className="modal-form">
+          <section className="modal-section">
             <h3>Add segment by users</h3>
-            <div className="promotion-control-with-button">
-              <div className="promotion-input">
+            <div className="form-row-with-button">
+              <div className="form-input">
                 <input placeholder="Usernames or email addresses" readOnly />
                 <ChevronDown size={14} />
               </div>
@@ -671,25 +1194,25 @@ function PromotionModal({ promotion, onClose }) {
             </div>
           </section>
 
-          <section className="promotion-form-section">
+          <section className="modal-section">
             <h3>Add segment label and CSP</h3>
-            <PromotionField label="Label" placeholder="Select labels" />
-            <PromotionField label="CSP" placeholder="Select a CSP" />
-            <PromotionField label="Exclude CSP" placeholder="Select a CSP" />
-            <div className="promotion-control-with-button">
-              <PromotionField label="Narrow segment by country" placeholder="Users from selected countries in the segment will…" />
+            <FormField label="Label" placeholder="Select labels" />
+            <FormField label="CSP" placeholder="Select a CSP" />
+            <FormField label="Exclude CSP" placeholder="Select a CSP" />
+            <div className="form-row-with-button">
+              <FormField label="Narrow segment by country" placeholder="Users from selected countries in the segment will…" />
               <button className="outline-icon-button field-side-button" type="button"><FilePlus2 size={18} /></button>
             </div>
           </section>
 
-          <section className="promotion-form-section promotion-form-grid">
-            <PromotionField label="Serial number of the promotion" placeholder={String(promotion?.id ?? promotions.length + 1)} type="input" />
-            <PromotionField label="Platforms" placeholder="Where the promotion will show" />
-            <PromotionField label="Button leads to" placeholder={promotion?.leadsTo ?? 'Balance'} />
-            <PromotionField label="End date (optional)" placeholder={promotion?.endDate === '—' ? 'End of the promotion' : promotion?.endDate ?? 'End of the promotion'} type="input" icon={CalendarDays} />
+          <section className="modal-section modal-section-grid">
+            <FormField label="Serial number of the promotion" placeholder={String(promotion?.id ?? promotions.length + 1)} type="input" />
+            <FormField label="Platforms" placeholder="Where the promotion will show" />
+            <FormField label="Button leads to" placeholder={promotion?.leadsTo ?? 'Balance'} />
+            <FormField label="End date (optional)" placeholder={promotion?.endDate === '—' ? 'End of the promotion' : promotion?.endDate ?? 'End of the promotion'} type="input" icon={CalendarDays} />
           </section>
 
-          <section className="promotion-form-section reminder-row">
+          <section className="modal-section reminder-row">
             <p>File with examples of segments and transitions</p>
             <label className="toggle-row">
               <input type="checkbox" checked={reminder} onChange={(event) => setReminder(event.target.checked)} />
@@ -699,26 +1222,26 @@ function PromotionModal({ promotion, onClose }) {
             </label>
           </section>
 
-          <section className="promotion-form-section promotion-copy">
+          <section className="modal-section promotion-copy">
             <div className="language-tabs">
               {['EN', 'RU', 'ES', 'PT', 'TH', 'AR', 'VI'].map((language) => <button className={language === 'EN' ? 'active' : ''} key={language}>{language}</button>)}
             </div>
-            <label className="promotion-field">
+            <label className="form-field">
               <span>Promotion title <small>?</small></span>
               <input className="standalone-input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Recommended length is up to 95 characters" />
             </label>
-            <label className="promotion-field">
+            <label className="form-field">
               <span>Promotion text in the modal window</span>
               <textarea placeholder="Tell users about the promotion" defaultValue={isEditing ? 'Discover this offer and unlock more opportunities in your Voiceon workspace.' : ''} />
               <div className="editor-toolbar">Normal ↕　≡　≣　☰　❞　<b>B</b>　<i>I</i>　<u>U</u>　☷　🔗　▧</div>
             </label>
-            <label className="promotion-field">
+            <label className="form-field">
               <span>Text on a button in the modal window</span>
               <input className="standalone-input" placeholder="Recommended length is up to 25 characters" defaultValue={isEditing ? 'Learn more' : ''} />
             </label>
           </section>
 
-          <section className="promotion-form-section promotion-assets">
+          <section className="modal-section promotion-assets">
             <PromotionUpload title="Banner for web version" size="720x600 px" />
             <PromotionUpload title="Banner for app" size="1372x440 px" />
             <PromotionUpload title="Image for modal window" size="1744x800 px" />
@@ -812,21 +1335,34 @@ function PlaceholderPage({ title }) {
 }
 
 function App() {
-  const [active, setActive] = useState(dashboardItem.label)
+  const [active, setActive] = useState('Users')
   const [menuOpen, setMenuOpen] = useState(false)
   const [notice, setNotice] = useState(false)
+  const [notificationDraft, setNotificationDraft] = useState(undefined)
+
+  const changeSection = (label) => {
+    setActive(label)
+    setNotificationDraft(undefined)
+  }
 
   return (
     <div className="app-shell">
-      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} active={active} setActive={setActive} />
+      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} active={active} setActive={changeSection} />
       <main className="main">
         <header className="topbar">
           <div className="workspace">
             <button className="icon-button menu-button" onClick={() => setMenuOpen(true)} aria-label="Open menu"><Menu size={20} /></button>
             {adminSubItems.includes(active) ? (
-              <span className="header-breadcrumb">Administrator <ChevronRight size={12} /> <strong>{active}</strong></span>
+              <span className="header-breadcrumb">
+                Administrator <ChevronRight size={12} /> <strong>{active}</strong>
+                {active === 'Notifications' && (
+                  <button className="breadcrumb-add" onClick={() => setNotificationDraft(null)} aria-label="New notification">
+                    <Plus size={14} />
+                  </button>
+                )}
+              </span>
             ) : (
-              <strong>{active === dashboardItem.label ? 'My Workspace' : active}</strong>
+              <strong>{active}</strong>
             )}
           </div>
           <label className="search">
@@ -841,11 +1377,13 @@ function App() {
           {notice && <div className="notice-popover">You're all caught up.</div>}
         </header>
 
-        <div className={`content ${['Users', 'Promotions'].includes(active) ? 'content-wide' : ''}`}>
-          {active === dashboardItem.label && <HomePage />}
+        <div className={`content ${['Users', 'Notifications', 'Promotions'].includes(active) ? 'content-wide' : ''}`}>
           {active === 'Users' && <UsersPage />}
+          {active === 'Notifications' && (
+            <NotificationsPage draft={notificationDraft} setDraft={setNotificationDraft} />
+          )}
           {active === 'Promotions' && <PromotionsPage />}
-          {![dashboardItem.label, 'Users', 'Promotions'].includes(active) && <PlaceholderPage title={active} />}
+          {!['Users', 'Notifications', 'Promotions'].includes(active) && <PlaceholderPage title={active} />}
         </div>
       </main>
     </div>
