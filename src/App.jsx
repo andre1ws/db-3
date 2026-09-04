@@ -350,6 +350,14 @@ function getProfile(user) {
 
 const cardTabs = ['Summary', 'Verification', 'Channels', 'Advance', 'Communication', 'Transactions', 'Revenue']
 
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+function formatSentDate(value) {
+  const date = new Date(value)
+  const day = String(date.getUTCDate()).padStart(2, '0')
+  return `${day} ${monthNames[date.getUTCMonth()]} ${date.getUTCFullYear()}`
+}
+
 const filterConditions = [
   { key: 'empty', label: 'Empty' },
   { key: 'is', label: 'Is' },
@@ -361,7 +369,27 @@ const titleCase = (value) => value.charAt(0).toUpperCase() + value.slice(1).toLo
 const isBlank = (value) =>
   value == null || value === '' || value === '—' || (Array.isArray(value) && value.length === 0)
 
-const filterFields = [
+const yesNo = (flag) => (flag ? 'Yes' : 'No')
+
+function buildFilterFields(rows, defs) {
+  return defs.map((field) => {
+    const values = new Set()
+    rows.forEach((row) => {
+      const raw = field.read(row)
+      const items = Array.isArray(raw) ? raw : [raw]
+      items.forEach((item) => { if (!isBlank(item)) values.add(item) })
+    })
+    return {
+      ...field,
+      options: [...values].sort().map((value) => ({
+        value,
+        label: field.format ? field.format(value) : value,
+      })),
+    }
+  })
+}
+
+const userFilterFields = buildFilterFields(users, [
   { key: 'role', label: 'Role', read: (user) => user.role },
   { key: 'kyc', label: 'KYC status', read: (user) => user.kyc, format: titleCase },
   { key: 'country', label: 'Country', read: (user) => getProfile(user).country },
@@ -369,33 +397,42 @@ const filterFields = [
   { key: 'device', label: 'Last action device', read: (user) => user.device, format: titleCase },
   { key: 'tag', label: 'Label', read: (user) => getProfile(user).tags },
   { key: 'registered', label: 'Registration year', read: (user) => user.registered.slice(-4) },
-].map((field) => {
-  const values = new Set()
-  users.forEach((user) => {
-    const raw = field.read(user)
-    const items = Array.isArray(raw) ? raw : [raw]
-    items.forEach((item) => { if (!isBlank(item)) values.add(item) })
-  })
-  return {
-    ...field,
-    options: [...values].sort().map((value) => ({
-      value,
-      label: field.format ? field.format(value) : value,
-    })),
-  }
-})
+])
 
-function matchesFilter(user, filter) {
-  const field = filterFields.find((item) => item.key === filter.field)
+const notificationFilterFields = buildFilterFields(notifications, [
+  { key: 'sender', label: 'Sender', read: (item) => item.sender },
+  { key: 'segment', label: 'Segment', read: (item) => item.segment },
+  { key: 'push', label: 'Push', read: (item) => yesNo(item.push) },
+  { key: 'sent', label: 'Sent', read: (item) => item.sent, format: formatSentDate },
+])
+
+const promotionFilterFields = buildFilterFields(promotions, [
+  { key: 'segment', label: 'Segment', read: (item) => item.segment },
+  { key: 'countries', label: 'Countries', read: (item) => item.countries },
+  { key: 'leadsTo', label: 'Button leads to', read: (item) => item.leadsTo },
+  { key: 'endDate', label: 'End date', read: (item) => item.endDate },
+  { key: 'updated', label: 'Date of last update', read: (item) => item.updated },
+])
+
+const transactionFilterFields = buildFilterFields(transactions, [
+  { key: 'status', label: 'Status', read: (item) => item.status, format: titleCase },
+  { key: 'express', label: 'Expresses', read: (item) => yesNo(item.express) },
+  { key: 'method', label: 'Payment method', read: (item) => item.method },
+  { key: 'created', label: 'Date of creation', read: (item) => item.created, format: formatSentDate },
+  { key: 'flagged', label: 'Requires clarification', read: (item) => yesNo(item.flagged) },
+])
+
+function matchesFilter(row, filter, fields) {
+  const field = fields.find((item) => item.key === filter.field)
   if (!field) return true
-  const raw = field.read(user)
+  const raw = field.read(row)
   if (filter.condition === 'empty') return isBlank(raw)
   const hit = Array.isArray(raw) ? raw.includes(filter.value) : raw === filter.value
   return filter.condition === 'is' ? hit : !hit
 }
 
-function describeFilter(filter) {
-  const field = filterFields.find((item) => item.key === filter.field)
+function describeFilter(filter, fields) {
+  const field = fields.find((item) => item.key === filter.field)
   const option = field?.options.find((item) => item.value === filter.value)
   return {
     condition: filterConditions.find((item) => item.key === filter.condition)?.label ?? '',
@@ -409,15 +446,108 @@ const sameFilters = (a, b) =>
   a.every((item, index) =>
     item.field === b[index].field && item.condition === b[index].condition && item.value === b[index].value)
 
-const PRESETS_KEY = 'voiceon.users.filter-presets'
-
-function loadPresets() {
+function loadPresets(storageKey) {
   try {
-    const raw = localStorage.getItem(PRESETS_KEY)
+    const raw = localStorage.getItem(storageKey)
     const parsed = raw ? JSON.parse(raw) : []
     return Array.isArray(parsed) ? parsed : []
   } catch {
     return []
+  }
+}
+
+function useFilters(fields, storageKey) {
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [draft, setDraft] = useState([])
+  const [applied, setApplied] = useState([])
+  const [field, setField] = useState('')
+  const [condition, setCondition] = useState('is')
+  const [value, setValue] = useState('')
+  const [presets, setPresets] = useState(() => loadPresets(storageKey))
+  const [activePresetId, setActivePresetId] = useState(null)
+  const [presetName, setPresetName] = useState('')
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(presets))
+    } catch {
+      // storage unavailable — presets stay in memory for this session
+    }
+  }, [storageKey, presets])
+
+  const addFilter = (nextField, nextCondition, nextValue) => {
+    setDraft((current) => {
+      const exists = current.some((item) =>
+        item.field === nextField && item.condition === nextCondition && item.value === nextValue)
+      if (exists) return current
+      const id = `${nextField}-${nextCondition}-${nextValue}-${current.length}-${Date.now()}`
+      return [...current, { id, field: nextField, condition: nextCondition, value: nextValue }]
+    })
+  }
+
+  const togglePreset = (preset) => {
+    if (activePresetId === preset.id) {
+      setActivePresetId(null)
+      setDraft([])
+      setApplied([])
+      return
+    }
+    setActivePresetId(preset.id)
+    setDraft(preset.filters)
+    setApplied(preset.filters)
+    setPanelOpen(true)
+  }
+
+  const deletePreset = (id) => {
+    setPresets((current) => current.filter((item) => item.id !== id))
+    if (activePresetId === id) setActivePresetId(null)
+  }
+
+  const apply = (rows) => rows.filter((row) => applied.every((item) => matchesFilter(row, item, fields)))
+
+  return {
+    apply,
+    applied,
+    activeCount: applied.length,
+    panelOpen,
+    setPanelOpen,
+    presets,
+    activePresetId,
+    togglePreset,
+    deletePreset,
+    panelProps: {
+      fields,
+      draft,
+      field,
+      condition,
+      value,
+      activePreset: presets.find((item) => item.id === activePresetId),
+      applyDisabled: sameFilters(draft, applied),
+      presetName,
+      onFieldChange: (next) => {
+        setField(next)
+        setValue('')
+        if (next && condition === 'empty') addFilter(next, 'empty', '')
+      },
+      onConditionChange: (next) => {
+        setCondition(next)
+        setValue('')
+        if (field && next === 'empty') addFilter(field, 'empty', '')
+      },
+      onValueChange: (next) => { if (next) addFilter(field, condition, next) },
+      onRemove: (id) => setDraft((current) => current.filter((item) => item.id !== id)),
+      onClear: () => setDraft([]),
+      onClose: () => setPanelOpen(false),
+      onApply: () => setApplied(draft),
+      onPresetNameChange: setPresetName,
+      onSavePreset: () => {
+        const preset = { id: `preset-${Date.now()}`, name: presetName.trim(), filters: draft }
+        setPresets((current) => [...current, preset])
+        setActivePresetId(preset.id)
+        setPresetName('')
+      },
+      onDeletePreset: () => deletePreset(activePresetId),
+    },
   }
 }
 
@@ -637,12 +767,39 @@ function FilterSelect({ value, onChange, placeholder, options, disabled }) {
   )
 }
 
+function FilterBar({ filters }) {
+  return (
+    <>
+      <button
+        className={`icon-button users-filter ${filters.panelOpen || filters.activeCount > 0 ? 'active' : ''}`}
+        onClick={() => filters.setPanelOpen((current) => !current)}
+        aria-label="Filters"
+      >
+        <SlidersHorizontal size={16} />
+        {filters.activeCount > 0 && <span className="filter-count">{filters.activeCount}</span>}
+      </button>
+      {filters.presets.map((preset) => (
+        <span key={preset.id} className={`preset-chip ${filters.activePresetId === preset.id ? 'active' : ''}`}>
+          <button className="preset-chip-label" onClick={() => filters.togglePreset(preset)}>{preset.name}</button>
+          <button
+            className="preset-chip-remove"
+            onClick={() => filters.deletePreset(preset.id)}
+            aria-label={`Delete preset ${preset.name}`}
+          >
+            <X size={11} />
+          </button>
+        </span>
+      ))}
+    </>
+  )
+}
+
 function FiltersPanel({
-  draft, field, condition, value, activePreset,
+  fields, draft, field, condition, value, activePreset,
   onFieldChange, onConditionChange, onValueChange, onRemove, onClear, onClose,
   onApply, applyDisabled, presetName, onPresetNameChange, onSavePreset, onDeletePreset,
 }) {
-  const currentField = filterFields.find((item) => item.key === field)
+  const currentField = fields.find((item) => item.key === field)
   const valueDisabled = !currentField || condition === 'empty'
 
   return (
@@ -659,7 +816,7 @@ function FiltersPanel({
             value={field}
             onChange={onFieldChange}
             placeholder="Select a field"
-            options={filterFields.map((item) => ({ value: item.key, label: item.label }))}
+            options={fields.map((item) => ({ value: item.key, label: item.label }))}
           />
         </label>
 
@@ -694,7 +851,7 @@ function FiltersPanel({
         <div className="filters-added">
           <div className="filters-chip-list">
             {draft.map((item) => {
-              const parts = describeFilter(item)
+              const parts = describeFilter(item, fields)
               return (
                 <span className="filter-chip" key={item.id}>
                   <b>{parts.condition}</b>
@@ -738,89 +895,18 @@ function FiltersPanel({
 function UsersPage() {
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState(null)
-  const [panelOpen, setPanelOpen] = useState(false)
-  const [draft, setDraft] = useState([])
-  const [applied, setApplied] = useState([])
-  const [field, setField] = useState('')
-  const [condition, setCondition] = useState('is')
-  const [value, setValue] = useState('')
-  const [presets, setPresets] = useState(loadPresets)
-  const [activePresetId, setActivePresetId] = useState(null)
-  const [presetName, setPresetName] = useState('')
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(PRESETS_KEY, JSON.stringify(presets))
-    } catch {
-      // storage unavailable — presets stay in memory for this session
-    }
-  }, [presets])
-
-  const addFilter = (nextField, nextCondition, nextValue) => {
-    setDraft((current) => {
-      const exists = current.some((item) =>
-        item.field === nextField && item.condition === nextCondition && item.value === nextValue)
-      if (exists) return current
-      const id = `${nextField}-${nextCondition}-${nextValue}-${current.length}-${Date.now()}`
-      return [...current, { id, field: nextField, condition: nextCondition, value: nextValue }]
-    })
-  }
-
-  const handleFieldChange = (next) => {
-    setField(next)
-    setValue('')
-    if (next && condition === 'empty') addFilter(next, 'empty', '')
-  }
-
-  const handleConditionChange = (next) => {
-    setCondition(next)
-    setValue('')
-    if (field && next === 'empty') addFilter(field, 'empty', '')
-  }
-
-  const handleValueChange = (next) => {
-    if (!next) return
-    addFilter(field, condition, next)
-  }
-
-  const togglePreset = (preset) => {
-    if (activePresetId === preset.id) {
-      setActivePresetId(null)
-      setDraft([])
-      setApplied([])
-      return
-    }
-    setActivePresetId(preset.id)
-    setDraft(preset.filters)
-    setApplied(preset.filters)
-    setPanelOpen(true)
-  }
-
-  const savePreset = () => {
-    const preset = { id: `preset-${Date.now()}`, name: presetName.trim(), filters: draft }
-    setPresets((current) => [...current, preset])
-    setActivePresetId(preset.id)
-    setPresetName('')
-  }
-
-  const deletePreset = (id) => {
-    setPresets((current) => current.filter((item) => item.id !== id))
-    if (activePresetId === id) setActivePresetId(null)
-  }
+  const filters = useFilters(userFilterFields, 'voiceon.users.filter-presets')
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return users.filter((user) => {
-      const matchesQuery = !q || [user.name, user.username, user.email, user.role]
-        .filter(Boolean)
-        .some((item) => item.toLowerCase().includes(q))
-      return matchesQuery && applied.every((filter) => matchesFilter(user, filter))
-    })
-  }, [query, applied])
+    const matched = users.filter((user) => !q || [user.name, user.username, user.email, user.role]
+      .filter(Boolean)
+      .some((item) => item.toLowerCase().includes(q)))
+    return filters.apply(matched)
+  }, [query, filters.applied])
 
   const selected = users.find((user) => user.id === selectedId)
   const detailOpen = Boolean(selected)
-  const activePreset = presets.find((item) => item.id === activePresetId)
 
   return (
     <div className="users-page">
@@ -833,26 +919,7 @@ function UsersPage() {
             placeholder="Username, channel or email"
           />
         </label>
-        <button
-          className={`icon-button users-filter ${panelOpen || applied.length > 0 ? 'active' : ''}`}
-          onClick={() => setPanelOpen((current) => !current)}
-          aria-label="Filters"
-        >
-          <SlidersHorizontal size={16} />
-          {applied.length > 0 && <span className="filter-count">{applied.length}</span>}
-        </button>
-        {presets.map((preset) => (
-          <span key={preset.id} className={`preset-chip ${activePresetId === preset.id ? 'active' : ''}`}>
-            <button className="preset-chip-label" onClick={() => togglePreset(preset)}>{preset.name}</button>
-            <button
-              className="preset-chip-remove"
-              onClick={() => deletePreset(preset.id)}
-              aria-label={`Delete preset ${preset.name}`}
-            >
-              <X size={11} />
-            </button>
-          </span>
-        ))}
+        <FilterBar filters={filters} />
         <div className="users-toolbar-actions">
           <button className="kyc-button">
             <ScanFace size={15} />
@@ -864,27 +931,7 @@ function UsersPage() {
         </div>
       </div>
 
-      {panelOpen && (
-        <FiltersPanel
-          draft={draft}
-          field={field}
-          condition={condition}
-          value={value}
-          activePreset={activePreset}
-          onFieldChange={handleFieldChange}
-          onConditionChange={handleConditionChange}
-          onValueChange={handleValueChange}
-          onRemove={(id) => setDraft((current) => current.filter((item) => item.id !== id))}
-          onClear={() => setDraft([])}
-          onClose={() => setPanelOpen(false)}
-          onApply={() => setApplied(draft)}
-          applyDisabled={sameFilters(draft, applied)}
-          presetName={presetName}
-          onPresetNameChange={setPresetName}
-          onSavePreset={savePreset}
-          onDeletePreset={() => deletePreset(activePresetId)}
-        />
-      )}
+      {filters.panelOpen && <FiltersPanel {...filters.panelProps} />}
 
       <section className="panel users-panel">
         <div className="users-table-wrap">
@@ -967,17 +1014,10 @@ function UsersPage() {
   )
 }
 
-const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-function formatSentDate(value) {
-  const date = new Date(value)
-  const day = String(date.getUTCDate()).padStart(2, '0')
-  return `${day} ${monthNames[date.getUTCMonth()]} ${date.getUTCFullYear()}`
-}
-
 function NotificationsPage({ draft, setDraft }) {
   const [query, setQuery] = useState('')
   const [descending, setDescending] = useState(true)
+  const filters = useFilters(notificationFilterFields, 'voiceon.notifications.filter-presets')
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -985,9 +1025,9 @@ function NotificationsPage({ draft, setDraft }) {
       ? notifications.filter((item) =>
         [item.sender, item.email, item.title, item.preview].some((field) => field.toLowerCase().includes(q)))
       : notifications
-    return [...matched].sort((a, b) =>
+    return [...filters.apply(matched)].sort((a, b) =>
       descending ? b.sent.localeCompare(a.sent) : a.sent.localeCompare(b.sent))
-  }, [query, descending])
+  }, [query, descending, filters.applied])
 
   return (
     <div className="users-page">
@@ -1000,11 +1040,11 @@ function NotificationsPage({ draft, setDraft }) {
             placeholder="Username or email"
           />
         </label>
-        <button className="icon-button users-filter" aria-label="Filters">
-          <SlidersHorizontal size={16} />
-        </button>
+        <FilterBar filters={filters} />
         <button className="archive-button notifications-archive"><Archive size={16} /> Archive</button>
       </div>
+
+      {filters.panelOpen && <FiltersPanel {...filters.panelProps} />}
 
       <section className="panel users-panel">
         <div className="users-table-wrap">
@@ -1076,6 +1116,7 @@ const money = (value) => `$${value.toLocaleString('en-US', { minimumFractionDigi
 function TransactionsPage({ region }) {
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState({ key: 'created', dir: 'desc' })
+  const filters = useFilters(transactionFilterFields, 'voiceon.transactions.filter-presets')
 
   const toggleSort = (key) =>
     setSort((current) => ({ key, dir: current.key === key && current.dir === 'desc' ? 'asc' : 'desc' }))
@@ -1086,12 +1127,12 @@ function TransactionsPage({ region }) {
       ? transactions.filter((item) =>
         [item.user, item.method, item.status].some((field) => field.toLowerCase().includes(q)))
       : transactions
-    return [...matched].sort((a, b) => {
+    return [...filters.apply(matched)].sort((a, b) => {
       const [left, right] = sort.dir === 'desc' ? [b, a] : [a, b]
       const value = left[sort.key]
       return typeof value === 'number' ? value - right[sort.key] : String(value).localeCompare(String(right[sort.key]))
     })
-  }, [query, sort])
+  }, [query, sort, filters.applied])
 
   const total = visible.reduce((sum, item) => sum + item.amount, 0)
 
@@ -1116,9 +1157,7 @@ function TransactionsPage({ region }) {
             placeholder="Username / Email / Account Number"
           />
         </label>
-        <button className="icon-button users-filter" aria-label="Filters">
-          <SlidersHorizontal size={16} />
-        </button>
+        <FilterBar filters={filters} />
         <div className="users-toolbar-actions">
           {transactionStats.map(({ label, icon: Icon, count }) => (
             <button className="count-button" key={label}>
@@ -1130,6 +1169,8 @@ function TransactionsPage({ region }) {
           <button className="icon-button toolbar-outline-button" aria-label="Export"><FileDown size={16} /></button>
         </div>
       </div>
+
+      {filters.panelOpen && <FiltersPanel {...filters.panelProps} />}
 
       <section className="panel users-panel">
         <div className="users-table-wrap">
@@ -1449,11 +1490,15 @@ function PromotionsPage() {
   const [editing, setEditing] = useState(undefined)
   const [modalOpen, setModalOpen] = useState(false)
 
+  const filters = useFilters(promotionFilterFields, 'voiceon.promotions.filter-presets')
+
   const filtered = useMemo(() => {
     const normalized = query.toLowerCase().trim()
-    if (!normalized) return promotions
-    return promotions.filter((promotion) => promotion.name.toLowerCase().includes(normalized))
-  }, [query])
+    const matched = normalized
+      ? promotions.filter((promotion) => promotion.name.toLowerCase().includes(normalized))
+      : promotions
+    return filters.apply(matched)
+  }, [query, filters.applied])
 
   const openPromotion = (promotion) => {
     setEditing(promotion)
@@ -1472,16 +1517,18 @@ function PromotionsPage() {
           <Search size={16} />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Banner name" />
         </label>
-        <button className="icon-button users-filter" aria-label="Filters"><SlidersHorizontal size={16} /></button>
+        <FilterBar filters={filters} />
         <button className="archive-button"><Archive size={16} /> Archive</button>
       </div>
+
+      {filters.panelOpen && <FiltersPanel {...filters.panelProps} />}
 
       <section className="panel promotions-panel">
         <div className="promotions-table-wrap">
           <table className="promotions-table">
             <thead>
               <tr>
-                <th><span className="th-user">Banner name <small>{promotions.length}</small></span></th>
+                <th><span className="th-user">Banner name <small>{filtered.length}</small></span></th>
                 <th>Segment</th>
                 <th>Countries</th>
                 <th>Button leads to</th>
