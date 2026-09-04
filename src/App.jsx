@@ -1557,17 +1557,6 @@ function PromotionsPage() {
   )
 }
 
-function PlaceholderPage({ title }) {
-  return (
-    <div className="welcome-row">
-      <div>
-        <h1>{title}</h1>
-        <p>This section is coming soon in Voiceon.</p>
-      </div>
-    </div>
-  )
-}
-
 function App() {
   const [active, setActive] = useState('Users')
   const [menuOpen, setMenuOpen] = useState(false)
@@ -1602,9 +1591,6 @@ function App() {
               <strong>{active}</strong>
             )}
           </div>
-          <label className="search">
-            <Search size={18} /><input placeholder="Search" /><kbd>⌘ K</kbd>
-          </label>
           <div className="top-actions">
             <button className="icon-button notification" onClick={() => setNotice(!notice)}><Bell size={19} /><span /></button>
             <button className="icon-button"><Settings size={19} /></button>
@@ -1621,9 +1607,6 @@ function App() {
           )}
           {active === 'Promotions' && <PromotionsPage />}
           {isTransactions && <TransactionsPage region={active.replace('Transactions ', '')} />}
-          {!isTransactions && !['Users', 'Notifications', 'Promotions'].includes(active) && (
-            <PlaceholderPage title={active} />
-          )}
         </div>
       </main>
     </div>
