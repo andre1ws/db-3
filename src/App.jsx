@@ -1,19 +1,40 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  Archive, ArrowDown, ArrowDownUp, ArrowUp, BadgePercent, BarChart3, Bell, CalendarDays,
-  Check, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, CircleDollarSign, Clock, Columns3, Download,
-  ExternalLink, FilePlus2, FileText, Handshake, ImagePlus, Landmark,
+  Archive, ArrowDown, ArrowDownUp, ArrowUp, ArrowUpDown, BadgePercent, BarChart3, Bell, CalendarDays,
+  Check, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, CircleDollarSign, CircleHelp, Clock, Columns3,
+  CreditCard, Download, ExternalLink, FileDown, FilePlus2, FileText, Handshake, ImagePlus, Info, Landmark,
   Menu, MessageCircle, MessagesSquare, Monitor, Pencil, PlaySquare, Plus,
-  Receipt, RefreshCw, ScanFace, Search, Settings, SlidersHorizontal, Smartphone,
-  Trash2, TrendingUp, UserRound, Users, Video, X, Zap,
+  Receipt, RefreshCw, Rocket, ScanFace, Search, Settings, SlidersHorizontal, Smartphone,
+  Trash2, TrendingUp, UserRound, Users, Video, Wallet, X, Zap,
 } from 'lucide-react'
 import './App.css'
 
-const adminSubItems = ['Users', 'Notifications', 'Labels', 'Promotions', 'Roles']
-
 const navItems = [
+  {
+    label: 'Administrator',
+    icon: Users,
+    children: [
+      { label: 'Users' },
+      { label: 'Notifications' },
+      { label: 'Labels' },
+      { label: 'Promotions' },
+      { label: 'Roles' },
+    ],
+  },
   { label: 'Departments', icon: FileText },
-  { label: 'Payments', icon: CircleDollarSign, dot: true, arrow: true },
+  {
+    label: 'Payments',
+    icon: CircleDollarSign,
+    dot: true,
+    children: [
+      { label: 'Transactions CY', badge: 37 },
+      { label: 'Transactions CA' },
+      { label: 'Transactions CN', badge: 68 },
+      { label: 'Transactions HK', badge: 1 },
+      { label: 'Payment methods' },
+      { label: 'Regions' },
+    ],
+  },
   { label: 'CSP', icon: Handshake, arrow: true },
   { label: 'Payment accounts', icon: Landmark, arrow: true },
   { label: 'Contracts', icon: Receipt },
@@ -117,6 +138,31 @@ const notifications = [
     title: 'We’d like to share a few important updates with you',
     preview: 'Changes in Belarusian banking operations and crypto withdrawal fee update',
   },
+]
+
+const transactions = [
+  { id: 1, user: 'Zakhar M', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'Tether TRC20 – USDT', methodLink: true, amount: 8400 },
+  { id: 2, user: 'Tatsiana Saroka', avatar: 'default', flagged: true, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in BYN (non sanctioned banks)', methodLink: false, amount: 1250 },
+  { id: 3, user: 'Broken Mouse Media LTD', avatar: 'default', flagged: false, status: 'CONFIRMED', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in local currency (Airwallex)', methodLink: true, amount: 104300 },
+  { id: 4, user: 'Daniil Parshukov', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in RUB (non sanctioned banks)', methodLink: true, amount: 3120 },
+  { id: 5, user: 'KONTORA GAMES LLC', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'Tether TRC20 – USDT', methodLink: false, amount: 46800 },
+  { id: 6, user: 'Ilia Egorov', avatar: 'default', flagged: true, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in USD (Airwallex, personal)', methodLink: false, amount: 5600 },
+  { id: 7, user: 'Rishabh Singh', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'PayPal – USD', methodLink: true, amount: 940 },
+  { id: 8, user: 'Aiturgan Abdrazakova', avatar: 'photo-a', flagged: false, status: 'CONFIRMED', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To a card in USD (Paysend)', methodLink: true, amount: 730 },
+  { id: 9, user: 'HFL Communication company', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in USD (Airwallex)', methodLink: true, amount: 168400 },
+  { id: 10, user: 'Hong Jie Lee', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To a card in USD (Paysend)', methodLink: true, amount: 21500 },
+  { id: 11, user: 'SETEL', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in USD (Airwallex)', methodLink: true, amount: 62700 },
+  { id: 12, user: 'Shine Image Culture Limited', avatar: 'default', flagged: false, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in USD (Airwallex)', methodLink: true, amount: 109800 },
+  { id: 13, user: 'Alikhan Zhapayev', avatar: 'default', flagged: false, status: 'CONFIRMED', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'To a card in USD (Paysend)', methodLink: true, amount: 1480 },
+  { id: 14, user: 'Van Nghia Le', avatar: 'default', flagged: true, status: 'NEW', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'Tether TRC20 – USDT', methodLink: false, amount: 3260 },
+  { id: 15, user: 'Esttik Associate', avatar: 'photo-c', flagged: false, status: 'NEW', express: true, created: '2026-09-04', updated: '2026-09-04', method: 'To an account in EUR (Payoneer)', methodLink: true, amount: 17900 },
+  { id: 16, user: 'FERNANDO GABRIEL ROMERO', avatar: 'photo-b', flagged: false, status: 'CONFIRMED', express: false, created: '2026-09-04', updated: '2026-09-04', method: 'Tether ERC20 – USDT', methodLink: true, amount: 12640 },
+]
+
+const transactionStats = [
+  { label: 'Quick Transfer', icon: Rocket, count: 0 },
+  { label: 'Require clarification', icon: CreditCard, count: 1 },
+  { label: 'New', icon: Wallet, count: 37 },
 ]
 
 const promotions = [
@@ -375,9 +421,15 @@ function loadPresets() {
   }
 }
 
+function findNavGroup(label) {
+  return navItems.find((item) => item.children?.some((child) => child.label === label))?.label
+}
+
 function Sidebar({ open, onClose, active, setActive }) {
-  const [adminOpen, setAdminOpen] = useState(true)
+  const [openGroups, setOpenGroups] = useState(() => ({ [findNavGroup(active) ?? 'Administrator']: true }))
   const go = (label) => { setActive(label); onClose() }
+  const toggleGroup = (label) =>
+    setOpenGroups((current) => ({ ...current, [label]: !current[label] }))
 
   return (
     <>
@@ -389,28 +441,37 @@ function Sidebar({ open, onClose, active, setActive }) {
         <nav>
           <p className="nav-title">Sections</p>
 
-          <button className="nav-item nav-group-toggle" onClick={() => setAdminOpen((value) => !value)}>
-            <Users size={17} strokeWidth={1.5} /><span>Administrator</span>
-            <ChevronDown size={14} className={`nav-arrow ${adminOpen ? 'open' : ''}`} />
-          </button>
-          {adminOpen && (
-            <div className="nav-subitems">
-              {adminSubItems.map((label) => (
-                <button key={label} className={`nav-item nav-subitem ${active === label ? 'active' : ''}`}
-                  onClick={() => go(label)}>
-                  <span>{label}</span>
+          {navItems.map(({ label, icon: Icon, dot, arrow, children }) => (
+            children ? (
+              <div key={label}>
+                <button className="nav-item nav-group-toggle" onClick={() => toggleGroup(label)}>
+                  <Icon size={17} strokeWidth={1.5} /><span>{label}</span>
+                  {dot && <span className="nav-dot" />}
+                  <ChevronDown size={14} className={`nav-arrow ${openGroups[label] ? 'open' : ''}`} />
                 </button>
-              ))}
-            </div>
-          )}
-
-          {navItems.map(({ label, icon: Icon, dot, arrow }) => (
-            <button key={label} className={`nav-item ${active === label ? 'active' : ''}`}
-              onClick={() => go(label)}>
-              <Icon size={17} strokeWidth={1.5} /><span>{label}</span>
-              {dot && <span className="nav-dot" />}
-              {arrow && <ChevronRight size={14} className="nav-arrow" />}
-            </button>
+                {openGroups[label] && (
+                  <div className="nav-subitems">
+                    {children.map((child) => (
+                      <button
+                        key={child.label}
+                        className={`nav-item nav-subitem ${active === child.label ? 'active' : ''}`}
+                        onClick={() => go(child.label)}
+                      >
+                        <span>{child.label}</span>
+                        {child.badge && <small>{child.badge}</small>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button key={label} className={`nav-item ${active === label ? 'active' : ''}`}
+                onClick={() => go(label)}>
+                <Icon size={17} strokeWidth={1.5} /><span>{label}</span>
+                {dot && <span className="nav-dot" />}
+                {arrow && <ChevronRight size={14} className="nav-arrow" />}
+              </button>
+            )
           ))}
         </nav>
         <button className="mc-pay-button" onClick={() => alert('Opening MC Pay...')}>
@@ -906,8 +967,12 @@ function UsersPage() {
   )
 }
 
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 function formatSentDate(value) {
-  return new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+  const date = new Date(value)
+  const day = String(date.getUTCDate()).padStart(2, '0')
+  return `${day} ${monthNames[date.getUTCMonth()]} ${date.getUTCFullYear()}`
 }
 
 function NotificationsPage({ draft, setDraft }) {
@@ -1002,6 +1067,128 @@ function NotificationsPage({ draft, setDraft }) {
       {draft !== undefined && (
         <NotificationModal notification={draft} onClose={() => setDraft(undefined)} />
       )}
+    </div>
+  )
+}
+
+const money = (value) => `$${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+
+function TransactionsPage({ region }) {
+  const [query, setQuery] = useState('')
+  const [sort, setSort] = useState({ key: 'created', dir: 'desc' })
+
+  const toggleSort = (key) =>
+    setSort((current) => ({ key, dir: current.key === key && current.dir === 'desc' ? 'asc' : 'desc' }))
+
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const matched = q
+      ? transactions.filter((item) =>
+        [item.user, item.method, item.status].some((field) => field.toLowerCase().includes(q)))
+      : transactions
+    return [...matched].sort((a, b) => {
+      const [left, right] = sort.dir === 'desc' ? [b, a] : [a, b]
+      const value = left[sort.key]
+      return typeof value === 'number' ? value - right[sort.key] : String(value).localeCompare(String(right[sort.key]))
+    })
+  }, [query, sort])
+
+  const total = visible.reduce((sum, item) => sum + item.amount, 0)
+
+  const SortHeader = ({ label, sortKey, hint }) => (
+    <button className="th-sort th-sort-button" onClick={() => toggleSort(sortKey)}>
+      {sort.key === sortKey
+        ? (sort.dir === 'desc' ? <ArrowDown size={12} /> : <ArrowUp size={12} />)
+        : <ArrowUpDown size={12} className="th-sort-idle" />}
+      {label}
+      {hint && <CircleHelp size={12} className="th-hint" />}
+    </button>
+  )
+
+  return (
+    <div className="users-page">
+      <div className="users-toolbar">
+        <label className="users-search">
+          <Search size={16} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Username / Email / Account Number"
+          />
+        </label>
+        <button className="icon-button users-filter" aria-label="Filters">
+          <SlidersHorizontal size={16} />
+        </button>
+        <div className="users-toolbar-actions">
+          {transactionStats.map(({ label, icon: Icon, count }) => (
+            <button className="count-button" key={label}>
+              <Icon size={15} strokeWidth={1.7} />
+              {label}
+              <span>{count}</span>
+            </button>
+          ))}
+          <button className="icon-button toolbar-outline-button" aria-label="Export"><FileDown size={16} /></button>
+        </div>
+      </div>
+
+      <section className="panel users-panel">
+        <div className="users-table-wrap">
+          <table className="users-table transactions-table">
+            <thead>
+              <tr>
+                <th>
+                  <span className="th-user">
+                    User
+                    <small>{visible.length.toLocaleString('en-US')}</small>
+                  </span>
+                </th>
+                <th><SortHeader label="Status" sortKey="status" /></th>
+                <th>
+                  <span className="th-sort">Expresses <CircleHelp size={12} className="th-hint" /></span>
+                </th>
+                <th><SortHeader label="Date of creation" sortKey="created" /></th>
+                <th><SortHeader label="Updated at" sortKey="updated" /></th>
+                <th><SortHeader label="Payment method" sortKey="method" hint /></th>
+                <th className="amount-column"><SortHeader label="Amount" sortKey="amount" /></th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map((item) => (
+                <tr key={item.id} className="clickable-row">
+                  <td>
+                    <div className="user-cell transaction-user">
+                      <UserAvatar name={item.user} variant={item.avatar} />
+                      <strong>{item.user}</strong>
+                      {item.flagged && <Info size={14} className="flagged-icon" />}
+                    </div>
+                  </td>
+                  <td><span className={`status-pill ${item.status.toLowerCase()}`}>{item.status}</span></td>
+                  <td>{item.express ? 'Yes' : 'No'}</td>
+                  <td className="sent-cell">{formatSentDate(item.created)}</td>
+                  <td className="sent-cell">{formatSentDate(item.updated)}</td>
+                  <td>
+                    <span className={`method-cell ${item.methodLink ? 'link' : ''}`}>{item.method}</span>
+                  </td>
+                  <td className="amount-column">{money(item.amount)}</td>
+                </tr>
+              ))}
+              {visible.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="users-empty">No transactions match your search.</td>
+                </tr>
+              )}
+            </tbody>
+            {visible.length > 0 && (
+              <tfoot>
+                <tr>
+                  <td colSpan={6}>Total{region ? ` · ${region}` : ''}</td>
+                  <td className="amount-column">{money(total)}</td>
+                </tr>
+              </tfoot>
+            )}
+          </table>
+        </div>
+      </section>
     </div>
   )
 }
@@ -1345,6 +1532,9 @@ function App() {
     setNotificationDraft(undefined)
   }
 
+  const group = findNavGroup(active)
+  const isTransactions = active.startsWith('Transactions')
+
   return (
     <div className="app-shell">
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} active={active} setActive={changeSection} />
@@ -1352,9 +1542,9 @@ function App() {
         <header className="topbar">
           <div className="workspace">
             <button className="icon-button menu-button" onClick={() => setMenuOpen(true)} aria-label="Open menu"><Menu size={20} /></button>
-            {adminSubItems.includes(active) ? (
+            {group ? (
               <span className="header-breadcrumb">
-                Administrator <ChevronRight size={12} /> <strong>{active}</strong>
+                {group} <ChevronRight size={12} /> <strong>{active}</strong>
                 {active === 'Notifications' && (
                   <button className="breadcrumb-add" onClick={() => setNotificationDraft(null)} aria-label="New notification">
                     <Plus size={14} />
@@ -1377,13 +1567,16 @@ function App() {
           {notice && <div className="notice-popover">You're all caught up.</div>}
         </header>
 
-        <div className={`content ${['Users', 'Notifications', 'Promotions'].includes(active) ? 'content-wide' : ''}`}>
+        <div className={`content ${isTransactions || ['Users', 'Notifications', 'Promotions'].includes(active) ? 'content-wide' : ''}`}>
           {active === 'Users' && <UsersPage />}
           {active === 'Notifications' && (
             <NotificationsPage draft={notificationDraft} setDraft={setNotificationDraft} />
           )}
           {active === 'Promotions' && <PromotionsPage />}
-          {!['Users', 'Notifications', 'Promotions'].includes(active) && <PlaceholderPage title={active} />}
+          {isTransactions && <TransactionsPage region={active.replace('Transactions ', '')} />}
+          {!isTransactions && !['Users', 'Notifications', 'Promotions'].includes(active) && (
+            <PlaceholderPage title={active} />
+          )}
         </div>
       </main>
     </div>
