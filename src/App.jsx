@@ -303,7 +303,109 @@ const users = [
     registered: '11 Mar 2022',
     avatar: 'default',
   },
+  {
+    id: 11, name: 'Marta Kowalska', username: 'marta.kowalska@voiceon.ai', email: 'marta.kowalska@voiceon.ai',
+    role: 'Content moderator', kyc: 'APPROVED', lastAction: '26 Aug 2026', device: 'desktop',
+    registered: '04 Feb 2025', avatar: 'photo-d',
+  },
+  {
+    id: 12, name: 'Giorgi Beridze', username: 'g.beridze@gmail.com', email: 'g.beridze@gmail.com',
+    role: null, kyc: 'PENDING', lastAction: '26 Aug 2026', device: 'mobile',
+    registered: '25 Aug 2026', avatar: 'photo-b',
+  },
+  {
+    id: 13, name: 'Aigerim Nurlanova', username: 'aigerim@mediacube.io', email: 'aigerim@mediacube.io',
+    role: 'Support manager', kyc: 'APPROVED', lastAction: '25 Aug 2026', device: 'desktop',
+    registered: '18 Sep 2024', avatar: 'default',
+  },
+  {
+    id: 14, name: 'Lukas Weber', username: 'lukas.weber@outlook.com', email: 'lukas.weber@outlook.com',
+    role: null, kyc: null, lastAction: '25 Aug 2026', device: 'mobile',
+    registered: '24 Aug 2026', avatar: 'photo-c',
+  },
+  {
+    id: 15, name: 'Beatriz Almeida', username: 'bea.almeida@voiceon.ai', email: 'bea.almeida@voiceon.ai',
+    role: 'Studio editor', kyc: 'APPROVED', lastAction: '25 Aug 2026', device: 'desktop',
+    registered: '07 May 2025', avatar: 'photo-a',
+  },
+  {
+    id: 16, name: 'Nguyen Minh Anh', username: 'minhanh.nguyen@gmail.com', email: 'minhanh.nguyen@gmail.com',
+    role: 'Voice talent', kyc: 'PENDING', lastAction: '24 Aug 2026', device: 'mobile',
+    registered: '21 Aug 2026', avatar: 'photo-d',
+  },
+  {
+    id: 17, name: 'Pavel Antonov', username: 'pantonov@mediacube.io', email: 'pantonov@mediacube.io',
+    role: 'Payments specialist', kyc: 'APPROVED', lastAction: '24 Aug 2026', device: 'desktop',
+    registered: '13 Jun 2023', avatar: 'default',
+  },
+  {
+    id: 18, name: 'Chiara Rossi', username: 'chiara.rossi@voiceon.ai', email: 'chiara.rossi@voiceon.ai',
+    role: 'Community manager 2.0', kyc: 'APPROVED', lastAction: '24 Aug 2026', device: 'desktop',
+    registered: '02 Oct 2024', avatar: 'photo-a',
+  },
+  {
+    id: 19, name: 'Deniz Yilmaz', username: 'deniz.yilmaz@gmail.com', email: 'deniz.yilmaz@gmail.com',
+    role: null, kyc: 'BLOCKED', lastAction: '23 Aug 2026', device: 'mobile',
+    registered: '15 Aug 2026', avatar: 'photo-c',
+  },
+  {
+    id: 20, name: 'Olga Sidorova', username: 'osidorova@mediacube.io', email: 'osidorova@mediacube.io',
+    role: 'Finance manager', kyc: 'APPROVED', lastAction: '23 Aug 2026', device: 'desktop',
+    registered: '29 Jan 2022', avatar: 'default',
+  },
+  {
+    id: 21, name: 'Rahul Mehta', username: 'rahul.mehta@voiceon.ai', email: 'rahul.mehta@voiceon.ai',
+    role: 'QA engineer', kyc: 'APPROVED', lastAction: '22 Aug 2026', device: 'desktop',
+    registered: '11 Nov 2023', avatar: 'photo-b',
+  },
+  {
+    id: 22, name: 'Sofia Nikolic', username: 's.nikolic@yandex.ru', email: 's.nikolic@yandex.ru',
+    role: null, kyc: null, lastAction: '22 Aug 2026', device: 'mobile',
+    registered: '20 Aug 2026', avatar: 'photo-d',
+  },
+  {
+    id: 23, name: 'Hanna Melnyk', username: 'hmelnyk@mediacube.io', email: 'hmelnyk@mediacube.io',
+    role: 'Partner manager', kyc: 'APPROVED', lastAction: '21 Aug 2026', device: 'desktop',
+    registered: '06 Apr 2024', avatar: 'default',
+  },
+  {
+    id: 24, name: 'Tomas Novak', username: 'tomas.novak@outlook.com', email: 'tomas.novak@outlook.com',
+    role: null, kyc: 'PENDING', lastAction: '20 Aug 2026', device: 'desktop',
+    registered: '19 Aug 2026', avatar: 'photo-c',
+  },
+  {
+    id: 25, name: 'Kristina Petrova', username: 'kpetrova@voiceon.ai', email: 'kpetrova@voiceon.ai',
+    role: 'Product designer', kyc: 'APPROVED', lastAction: '19 Aug 2026', device: 'desktop',
+    registered: '23 Jul 2024', avatar: 'photo-a',
+  },
+  {
+    id: 26, name: 'Ahmed Al Farsi', username: 'ahmed.alfarsi@gmail.com', email: 'ahmed.alfarsi@gmail.com',
+    role: 'Voice talent', kyc: 'APPROVED', lastAction: '18 Aug 2026', device: 'mobile',
+    registered: '30 May 2026', avatar: 'photo-b',
+  },
+  {
+    id: 27, name: 'Yulia Kravets', username: 'ykravets@mediacube.io', email: 'ykravets@mediacube.io',
+    role: 'Support manager', kyc: 'APPROVED', lastAction: '17 Aug 2026', device: 'desktop',
+    registered: '14 Dec 2022', avatar: 'default',
+  },
+  {
+    id: 28, name: 'Carlos Duarte', username: 'carlos.duarte@voiceon.ai', email: 'carlos.duarte@voiceon.ai',
+    role: 'Garna Partner (BR)', kyc: 'APPROVED', lastAction: '15 Aug 2026', device: 'desktop',
+    registered: '09 Feb 2023', avatar: 'photo-c',
+  },
+  {
+    id: 29, name: 'Somchai Wong', username: 'somchai.w@gmail.com', email: 'somchai.w@gmail.com',
+    role: null, kyc: null, lastAction: '12 Aug 2026', device: 'mobile',
+    registered: '11 Aug 2026', avatar: 'photo-d',
+  },
+  {
+    id: 30, name: 'Elena Sarkisyan', username: 'esarkisyan@mediacube.io', email: 'esarkisyan@mediacube.io',
+    role: 'Community manager 2.0', kyc: 'APPROVED', lastAction: '08 Aug 2026', device: 'desktop',
+    registered: '17 Jun 2025', avatar: 'photo-a',
+  },
 ]
+
+const pendingKyc = users.filter((user) => user.kyc === 'PENDING').length
 
 const profileDefaults = {
   gender: '—',
@@ -342,6 +444,26 @@ const profiles = {
     twoFactor: '+375 29 123 45 67',
     lastActionApp: '24 Aug 2026',
   },
+  11: { gender: 'Female', birthDate: '14 Mar 1995 (31 years old)', country: 'Poland', icaDate: '04.02.2025', position: 'Content moderator', tags: ['Support', 'Voiceon'], twoFactor: '+48 512 334 556' },
+  12: { gender: 'Male', birthDate: '27 Aug 1999 (27 years old)', country: 'Georgia', icaDate: '25.08.2026', position: 'Creator', tags: ['Voiceon'] },
+  13: { gender: 'Female', birthDate: '05 Dec 1996 (29 years old)', country: 'Kazakhstan', icaDate: '18.09.2024', position: 'Support manager', tags: ['Support', 'Voiceon'], twoFactor: '+7 701 223 44 55', balance: '$120.40/€110.85' },
+  14: { gender: 'Male', birthDate: '—', country: 'Germany', icaDate: '24.08.2026', position: 'Creator', tags: ['Voiceon'] },
+  15: { gender: 'Female', birthDate: '19 Jun 1994 (32 years old)', country: 'Portugal', icaDate: '07.05.2025', position: 'Studio editor', tags: ['Studio', 'Voiceon'], twoFactor: '+351 912 445 778' },
+  16: { gender: 'Female', birthDate: '02 Feb 2000 (26 years old)', country: 'Vietnam', icaDate: '21.08.2026', position: 'Voice talent', tags: ['Voiceon'] },
+  17: { gender: 'Male', birthDate: '11 Oct 1990 (35 years old)', country: 'Cyprus', icaDate: '13.06.2023', position: 'Payments specialist', tags: ['Fintech', 'Voiceon'], twoFactor: '+357 96 774 112', balance: '$0.00/€2,480.00' },
+  18: { gender: 'Female', birthDate: '23 Apr 1993 (33 years old)', country: 'Spain', icaDate: '02.10.2024', position: 'Community manager 2.0', tags: ['Community', 'Voiceon'], twoFactor: '+34 611 998 220' },
+  19: { gender: 'Male', birthDate: '—', country: 'Turkey', icaDate: '15.08.2026', position: 'Creator', tags: ['Blocked'] },
+  20: { gender: 'Female', birthDate: '08 Jul 1987 (39 years old)', country: 'Belarus', icaDate: '29.01.2022', position: 'Finance manager', tags: ['Fintech', 'Admin'], twoFactor: '+375 29 660 77 88', balance: '$4,310.00/€0.00' },
+  21: { gender: 'Male', birthDate: '30 Jan 1992 (34 years old)', country: 'India', icaDate: '11.11.2023', position: 'QA engineer', tags: ['Product', 'Voiceon'], twoFactor: '+91 98200 44112' },
+  22: { gender: 'Female', birthDate: '—', country: 'Serbia', icaDate: '20.08.2026', position: 'Creator', tags: ['Voiceon'] },
+  23: { gender: 'Female', birthDate: '17 Sep 1991 (34 years old)', country: 'Ukraine', icaDate: '06.04.2024', position: 'Partner manager', tags: ['Garna', 'Partner'], twoFactor: '+380 67 220 11 90' },
+  24: { gender: 'Male', birthDate: '25 May 1998 (28 years old)', country: 'Czechia', icaDate: '19.08.2026', position: 'Creator', tags: ['Voiceon'] },
+  25: { gender: 'Female', birthDate: '12 Feb 1995 (31 years old)', country: 'Armenia', icaDate: '23.07.2024', position: 'Product designer', tags: ['Product', 'Voiceon'], twoFactor: '+374 91 556 220' },
+  26: { gender: 'Male', birthDate: '06 Nov 1989 (36 years old)', country: 'United Arab Emirates', icaDate: '30.05.2026', position: 'Voice talent', tags: ['Approved', 'Voiceon'], balance: '$860.00/€0.00' },
+  27: { gender: 'Female', birthDate: '28 Mar 1994 (32 years old)', country: 'Ukraine', icaDate: '14.12.2022', position: 'Support manager', tags: ['Support', 'Voiceon'], twoFactor: '+380 63 118 44 20' },
+  28: { gender: 'Male', birthDate: '09 Aug 1986 (40 years old)', country: 'Brazil', icaDate: '09.02.2023', position: 'Garna Partner (BR)', tags: ['Garna', 'Partner'], accountLabel: 'Garna Internal account', twoFactor: '+55 11 96442 8810', balance: '$12,700.00/€0.00' },
+  29: { gender: 'Male', birthDate: '—', country: 'Thailand', icaDate: '11.08.2026', position: 'Creator', tags: ['Voiceon'] },
+  30: { gender: 'Female', birthDate: '21 Dec 1996 (29 years old)', country: 'Armenia', icaDate: '17.06.2025', position: 'Community manager 2.0', tags: ['Community', 'Voiceon'], twoFactor: '+374 77 330 118' },
 }
 
 function getProfile(user) {
@@ -924,7 +1046,7 @@ function UsersPage() {
           <button className="kyc-button">
             <ScanFace size={15} />
             Checking KYC
-            <span>9</span>
+            <span>{pendingKyc}</span>
           </button>
           <button className="icon-button toolbar-outline-button" aria-label="Export"><Download size={16} /></button>
           <button className="icon-button toolbar-outline-button" aria-label="Columns"><Columns3 size={16} /></button>

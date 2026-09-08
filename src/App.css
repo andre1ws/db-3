@@ -333,6 +333,7 @@ button { transition: .18s ease; }
 }
 .kyc-pill.approved { background: #2fbf4a; }
 .kyc-pill.blocked { background: #3a3b44; }
+.kyc-pill.pending { background: #ffc93c; color: #4a3800; }
 .empty-cell { color: #c2c3c9; }
 .action-cell {
   display: inline-flex; align-items: center; gap: 7px; color: #3a3b43; white-space: nowrap;
