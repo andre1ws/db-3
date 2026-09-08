@@ -232,7 +232,7 @@ button { transition: .18s ease; }
   padding: 8px 12px; border-bottom: 1px solid #ececef; white-space: nowrap;
 }
 .users-table td {
-  height: 38px; padding: 4px 12px; border-bottom: 1px solid #f0f1f4;
+  height: 44px; padding: 7px 12px; border-bottom: 1px solid #f0f1f4;
   font-size: 12px; color: #2a2b32; vertical-align: middle;
 }
 .users-table tbody tr:last-child td { border-bottom: 0; }
@@ -268,7 +268,7 @@ button { transition: .18s ease; }
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .message-cell small {
-  display: block; max-width: 460px; margin-top: 2px; font-size: 10.5px; color: #8a8b93;
+  display: block; max-width: 460px; margin-top: 3px; font-size: 10.5px; color: #8a8b93;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .sent-cell { white-space: nowrap; color: #3a3b43; }
