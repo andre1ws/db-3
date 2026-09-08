@@ -229,10 +229,10 @@ button { transition: .18s ease; }
 }
 .users-table th {
   text-align: left; font-size: 11px; font-weight: 500; color: #74767d;
-  padding: 6px 12px; border-bottom: 1px solid #ececef; white-space: nowrap;
+  padding: 8px 12px; border-bottom: 1px solid #ececef; white-space: nowrap;
 }
 .users-table td {
-  padding: 6px 12px; border-bottom: 1px solid #f0f1f4;
+  height: 38px; padding: 4px 12px; border-bottom: 1px solid #f0f1f4;
   font-size: 12px; color: #2a2b32; vertical-align: middle;
 }
 .users-table tbody tr:last-child td { border-bottom: 0; }
@@ -260,7 +260,6 @@ button { transition: .18s ease; }
   padding: 10px 12px; border-top: 1px solid #ececef;
   font-size: 12px; font-weight: 600; color: #1c1d22;
 }
-.notifications-table td { padding: 8px 12px; }
 .notifications-table th:nth-child(3), .notifications-table td:nth-child(3) { width: 60px; }
 .notifications-table th:nth-child(4) { width: 45%; }
 .push-sent { color: #a6a8b0; }
@@ -269,16 +268,16 @@ button { transition: .18s ease; }
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .message-cell small {
-  display: block; max-width: 460px; margin-top: 3px; font-size: 10.5px; color: #8a8b93;
+  display: block; max-width: 460px; margin-top: 2px; font-size: 10.5px; color: #8a8b93;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .sent-cell { white-space: nowrap; color: #3a3b43; }
 .th-sort-button { background: transparent; color: inherit; font: inherit; padding: 0; }
 .th-sort-button:hover { color: #11121a; }
 .breadcrumb-add {
-  width: 20px; height: 20px; margin-left: 4px; border-radius: 50%; line-height: 0;
+  width: 24px; height: 24px; margin-left: 6px; border-radius: 50%; line-height: 0;
   display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid #d9dae0; background: #fff; color: #5d6069;
+  border: 1px solid #cfd0d6; background: #fff; color: #2a2b32;
 }
 .breadcrumb-add svg { display: block; }
 .breadcrumb-add:hover { border-color: #cdc6ff; background: #f4f2ff; color: #6d5efc; }

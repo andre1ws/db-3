@@ -1583,7 +1583,7 @@ function App() {
                 {group} <ChevronRight size={12} /> <strong>{active}</strong>
                 {active === 'Notifications' && (
                   <button className="breadcrumb-add" onClick={() => setNotificationDraft(null)} aria-label="New notification">
-                    <Plus size={14} />
+                    <Plus size={15} strokeWidth={2.2} />
                   </button>
                 )}
               </span>
