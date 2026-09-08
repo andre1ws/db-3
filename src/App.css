@@ -237,7 +237,7 @@ button { transition: .18s ease; }
 }
 .users-table tbody tr:last-child td { border-bottom: 0; }
 
-.notifications-archive { margin-left: auto; }
+.toolbar-archive { margin-left: auto; }
 .notifications-table { min-width: 940px; }
 .clickable-row { cursor: pointer; }
 
@@ -429,17 +429,6 @@ button { transition: .18s ease; }
 .profile-empty { padding: 48px 8px; text-align: center; color: #8a8b93; font-size: 13px; }
 
 
-.promotions-heading {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  margin-bottom: 10px;
-}
-.promotions-heading h1 {
-  margin: 2px 0 0; font-size: 22px; line-height: 1; letter-spacing: -.8px;
-}
-.promotions-toolbar {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-}
-.promotions-toolbar .archive-button { margin-left: auto; }
 .archive-button {
   height: 32px; padding: 0 10px; border-radius: 10px; display: inline-flex;
   align-items: center; gap: 6px; background: transparent; color: #4f5058; font-size: 11px;
@@ -594,11 +583,6 @@ button { transition: .18s ease; }
 .secondary-button:hover { background: #e8e9ec; }
 
 @media (max-width: 720px) {
-  .promotions-heading { align-items: flex-end; }
-  .promotions-heading .primary-button { padding: 0 10px; }
-  .promotions-toolbar { flex-wrap: wrap; }
-  .promotions-toolbar .users-search { max-width: none; }
-  .promotions-toolbar .archive-button { margin-left: 0; }
   .side-modal { border-radius: 0; }
   .modal-section-grid { grid-template-columns: 1fr; }
 }

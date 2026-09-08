@@ -1163,7 +1163,7 @@ function NotificationsPage({ draft, setDraft }) {
           />
         </label>
         <FilterBar filters={filters} />
-        <button className="archive-button notifications-archive"><Archive size={16} /> Archive</button>
+        <button className="archive-button toolbar-archive"><Archive size={16} /> Archive</button>
       </div>
 
       {filters.panelOpen && <FiltersPanel {...filters.panelProps} />}
@@ -1607,11 +1607,8 @@ function PromotionModal({ promotion, onClose }) {
   )
 }
 
-function PromotionsPage() {
+function PromotionsPage({ draft, setDraft }) {
   const [query, setQuery] = useState('')
-  const [editing, setEditing] = useState(undefined)
-  const [modalOpen, setModalOpen] = useState(false)
-
   const filters = useFilters(promotionFilterFields, 'voiceon.promotions.filter-presets')
 
   const filtered = useMemo(() => {
@@ -1622,25 +1619,15 @@ function PromotionsPage() {
     return filters.apply(matched)
   }, [query, filters.applied])
 
-  const openPromotion = (promotion) => {
-    setEditing(promotion)
-    setModalOpen(true)
-  }
-
   return (
     <div className="promotions-page">
-      <div className="promotions-heading">
-        <h1>Promotions</h1>
-        <button className="primary-button" onClick={() => openPromotion(undefined)}><Plus size={17} /> New promotion</button>
-      </div>
-
-      <div className="promotions-toolbar">
+      <div className="users-toolbar">
         <label className="users-search">
           <Search size={16} />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Banner name" />
         </label>
         <FilterBar filters={filters} />
-        <button className="archive-button"><Archive size={16} /> Archive</button>
+        <button className="archive-button toolbar-archive"><Archive size={16} /> Archive</button>
       </div>
 
       {filters.panelOpen && <FiltersPanel {...filters.panelProps} />}
@@ -1660,7 +1647,7 @@ function PromotionsPage() {
             </thead>
             <tbody>
               {filtered.map((promotion) => (
-                <tr key={promotion.id} onClick={() => openPromotion(promotion)}>
+                <tr key={promotion.id} onClick={() => setDraft(promotion)}>
                   <td><strong>{promotion.name}</strong></td>
                   <td><span className="role-pill">{promotion.segment}</span></td>
                   <td><span className="role-pill">{promotion.countries}</span></td>
@@ -1674,7 +1661,7 @@ function PromotionsPage() {
         </div>
       </section>
 
-      {modalOpen && <PromotionModal promotion={editing} onClose={() => setModalOpen(false)} />}
+      {draft !== undefined && <PromotionModal promotion={draft} onClose={() => setDraft(undefined)} />}
     </div>
   )
 }
@@ -1684,14 +1671,20 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [notice, setNotice] = useState(false)
   const [notificationDraft, setNotificationDraft] = useState(undefined)
+  const [promotionDraft, setPromotionDraft] = useState(undefined)
 
   const changeSection = (label) => {
     setActive(label)
     setNotificationDraft(undefined)
+    setPromotionDraft(undefined)
   }
 
   const group = findNavGroup(active)
   const isTransactions = active.startsWith('Transactions')
+  const createAction = {
+    Notifications: { label: 'New notification', run: () => setNotificationDraft(null) },
+    Promotions: { label: 'New promotion', run: () => setPromotionDraft(null) },
+  }[active]
 
   return (
     <div className="app-shell">
@@ -1703,8 +1696,8 @@ function App() {
             {group ? (
               <span className="header-breadcrumb">
                 {group} <ChevronRight size={12} /> <strong>{active}</strong>
-                {active === 'Notifications' && (
-                  <button className="breadcrumb-add" onClick={() => setNotificationDraft(null)} aria-label="New notification">
+                {createAction && (
+                  <button className="breadcrumb-add" onClick={createAction.run} aria-label={createAction.label}>
                     <Plus size={15} strokeWidth={2.2} />
                   </button>
                 )}
@@ -1727,7 +1720,9 @@ function App() {
           {active === 'Notifications' && (
             <NotificationsPage draft={notificationDraft} setDraft={setNotificationDraft} />
           )}
-          {active === 'Promotions' && <PromotionsPage />}
+          {active === 'Promotions' && (
+            <PromotionsPage draft={promotionDraft} setDraft={setPromotionDraft} />
+          )}
           {isTransactions && <TransactionsPage region={active.replace('Transactions ', '')} />}
         </div>
       </main>
